@@ -6,7 +6,6 @@
   <title>TS Packs</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
@@ -26,16 +25,20 @@
       box-shadow: 0 10px 30px rgba(220,38,38,.25);
     }
 
-    .card img {
-      transition: transform .4s ease;
-    }
-
-    .card:hover img {
-      transform: scale(1.05);
-    }
+    .card img { transition: transform .4s ease; }
+    .card:hover img { transform: scale(1.05); }
 
     .overlay {
       background: linear-gradient(180deg, transparent 10%, rgba(0,0,0,.85) 90%);
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
     }
   </style>
 </head>
@@ -60,30 +63,26 @@
 </header>
 
 <!-- HERO -->
-<section class="relative min-h-screen flex items-center bg-[url('img/hero.jpg')] bg-cover bg-center">
-  <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40"></div>
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
 
-  <div class="relative max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-    <div>
-      <h2 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-        Seja uma <br>
-        <span class="text-red-600">TS Model</span>
-      </h2>
+  <video autoplay muted loop playsinline class="hero-video">
+    <source src="cris.mp4" type="video/mp4">
+  </video>
 
-      <p class="text-neutral-300 mb-8 text-lg">
-        Ganhe dinheiro, visibilidade e liberdade. Faça parte da maior plataforma premium de modelos exclusivas.
-      </p>
+  <div class="absolute inset-0 bg-black/70"></div>
 
-      <div class="flex items-center gap-6">
-        <a href="#modelos" class="px-10 py-4 bg-red-600 hover:bg-red-700 transition font-semibold tracking-widest rounded-xl">
-          VER MODELOS
-        </a>
+  <div class="relative z-10 max-w-3xl text-center px-6">
+    <h2 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+      Seja uma <span class="text-red-600">TS Model</span>
+    </h2>
 
-        <button class="w-16 h-16 rounded-full border-4 border-red-600 flex items-center justify-center hover:scale-110 transition">
-          ▶
-        </button>
-      </div>
-    </div>
+    <p class="text-neutral-300 mb-8 text-lg">
+      Ganhe dinheiro, visibilidade e liberdade. Faça parte da maior plataforma premium de modelos exclusivas.
+    </p>
+
+    <a href="Modelos" class="px-10 py-4 bg-red-600 hover:bg-red-700 transition font-semibold tracking-widest rounded-xl">
+      VER MODELOS
+    </a>
   </div>
 </section>
 
@@ -95,7 +94,6 @@
 
   <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
 
-    <!-- CARD -->
     <div class="card group relative">
       <img onclick="openModal(this.src)" src="WhatsApp Image 2026-02-06 at 01.38.59.jpeg"
            class="cursor-pointer w-full h-[460px] object-cover">

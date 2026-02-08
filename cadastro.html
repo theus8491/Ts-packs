@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>Cadastro • TS Packs</title>
+
+  <!-- Google verification (anti golpe) -->
+  <meta name="google-site-verification" content="google89d6352965223c48" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -17,7 +21,6 @@
 
 <body class="bg-neutral-950 text-white flex items-center justify-center min-h-screen px-6">
 
-<!-- CARD -->
 <div class="w-full max-w-md bg-gradient-to-b from-neutral-900 to-black border border-neutral-800 rounded-2xl p-8 shadow-2xl">
 
   <h1 class="text-center text-2xl font-extrabold tracking-widest mb-2">
@@ -30,26 +33,21 @@
 
   <div class="space-y-4">
 
-    <input id="nome"
-      class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600"
-      placeholder="Nome artístico">
+    <input id="nome" placeholder="Nome artístico"
+      class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600">
 
-    <input id="telefone"
-      class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600"
-      placeholder="WhatsApp (somente números)">
+    <input id="telefone" placeholder="WhatsApp (somente números)"
+      class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600">
 
-    <input id="idade" type="number"
-      class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600"
-      placeholder="Idade">
+    <input id="idade" type="number" placeholder="Idade"
+      class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600">
 
     <!-- FOTO -->
     <div>
-      <p class="text-xs uppercase tracking-widest text-neutral-400 mb-2">
-        Foto principal
-      </p>
+      <p class="text-xs uppercase tracking-widest text-neutral-400 mb-2">Foto principal</p>
 
       <label class="flex items-center gap-4 cursor-pointer">
-        <span class="bg-red-600 hover:bg-red-700 transition px-5 py-2 rounded-full font-bold text-sm">
+        <span class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-full font-bold text-sm">
           Escolher arquivo
         </span>
         <span id="fileName" class="text-sm text-neutral-400 truncate">
@@ -60,7 +58,7 @@
     </div>
 
     <button onclick="enviar()"
-      class="w-full mt-6 bg-red-600 hover:bg-red-700 transition py-4 rounded-xl font-extrabold tracking-widest shadow-lg shadow-red-600/30">
+      class="w-full mt-6 bg-red-600 hover:bg-red-700 py-4 rounded-xl font-extrabold tracking-widest">
       ENVIAR SOLICITAÇÃO
     </button>
 
@@ -70,7 +68,6 @@
 </div>
 
 <script>
-/* ✅ SUPABASE CLIENT CORRETO */
 const supabaseClient = supabase.createClient(
   'https://ezcdhydjxielfhjqgblk.supabase.co',
   'sb_publishable_hjJTkrZPGMgxAFDHPfzJ2A_DSKB1MEL'
@@ -93,7 +90,7 @@ async function enviar() {
   msg.innerHTML = ''
 
   if (!nome || !telefone || !idade || !foto) {
-    msg.innerHTML = `<span class="text-red-500">Preencha todos os campos.</span>`
+    msg.innerHTML = '<span class="text-red-500">Preencha todos os campos.</span>'
     return
   }
 
@@ -101,22 +98,15 @@ async function enviar() {
     const ext = foto.name.split('.').pop()
     const path = `modelos/${Date.now()}.${ext}`
 
-    /* ✅ UPLOAD DA FOTO */
     const { error: uploadError } = await supabaseClient
-      .storage
-      .from('fotos')
-      .upload(path, foto, {
-        cacheControl: '3600',
-        upsert: false,
-        contentType: foto.type
-      })
+      .storage.from('fotos')
+      .upload(path, foto)
 
     if (uploadError) throw uploadError
 
     const foto_url =
       `https://ezcdhydjxielfhjqgblk.supabase.co/storage/v1/object/public/fotos/${path}`
 
-    /* ✅ SALVA NO BANCO */
     const { error } = await supabaseClient
       .from('modelos')
       .insert({
@@ -124,16 +114,18 @@ async function enviar() {
         telefone,
         idade,
         foto_url,
-        foto_path: path,
         aprovado: false
       })
 
     if (error) throw error
 
-    msg.innerHTML = `<span class="text-green-400">Solicitação enviada com sucesso! Aguarde aprovação.</span>`
+    msg.innerHTML =
+      '<span class="text-green-400">Cadastro enviado! Aguarde aprovação.</span>'
+
   } catch (err) {
     console.error(err)
-    msg.innerHTML = `<span class="text-red-500">Erro ao enviar solicitação.</span>`
+    msg.innerHTML =
+      '<span class="text-red-500">Erro ao enviar. Verifique permissões do Supabase.</span>'
   }
 }
 </script>

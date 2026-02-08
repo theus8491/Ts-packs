@@ -1,36 +1,16 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" style="scroll-behavior: smooth;">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TS Packs</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TS Packs - Premium</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     body { font-family: 'Poppins', sans-serif; }
-
-    .card {
-      background: linear-gradient(180deg, #111, #000);
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid #1f1f1f;
-      transition: all .3s ease;
-    }
-
-    .card:hover {
-      border-color: #dc2626;
-      transform: translateY(-6px);
-      box-shadow: 0 10px 30px rgba(220,38,38,.25);
-    }
-
-    .card img { transition: transform .4s ease; }
-    .card:hover img { transform: scale(1.05); }
-
-    .overlay {
-      background: linear-gradient(180deg, transparent 10%, rgba(0,0,0,.85) 90%);
-    }
 
     .hero-video {
       position: absolute;
@@ -40,116 +20,180 @@
       object-fit: cover;
       z-index: 0;
     }
+
+    .card {
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #111, #000);
+      border: 1px solid #1f1f1f;
+      transition: all .35s ease;
+      position: relative;
+      height: 460px;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: #dc2626;
+      box-shadow: 0 10px 25px rgba(220,38,38,.25);
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .overlay {
+      background: linear-gradient(180deg, transparent 15%, rgba(0,0,0,.9) 85%);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+    }
   </style>
 </head>
 
 <body class="bg-neutral-950 text-white">
 
-<header class="absolute w-full z-50">
-  <div class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
-    <h1 class="text-3xl font-extrabold tracking-widest
-    bg-[url('img/textura.jpg')] bg-cover bg-center
-    text-transparent bg-clip-text">
-      TS PACKS
+<header class="fixed w-full z-50 bg-black/40 backdrop-blur">
+  <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+    <h1 class="text-3xl font-extrabold tracking-widest">
+      <span class="text-white">TS</span>
+      <span class="text-red-600">PACKS</span>
     </h1>
 
-    <nav class="hidden md:flex gap-10 text-sm tracking-wider">
-      <a href="#" class="hover:text-red-500 transition">INÍCIO</a>
+    <nav class="hidden md:flex gap-6 text-sm items-center tracking-wider font-semibold">
+      <a href="#inicio" class="hover:text-red-500 transition">INÍCIO</a>
       <a href="#modelos" class="hover:text-red-500 transition">MODELOS</a>
-      <a href="#" class="hover:text-red-500 transition">SOBRE</a>
-      <a href="#" class="hover:text-red-500 transition">CONTATO</a>
+
+      <!-- ✅ LINK CORRIGIDO -->
+      <a href="cadastro.html"
+         class="border border-white/20 px-4 py-2 rounded-lg hover:bg-white hover:text-black transition">
+        SOU MODELO
+      </a>
+
+      <a href="login.html"
+         class="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 transition">
+        ADM
+      </a>
     </nav>
   </div>
 </header>
 
-<!-- HERO -->
-<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
-
+<section id="inicio" class="relative min-h-screen flex items-center justify-center overflow-hidden">
   <video autoplay muted loop playsinline class="hero-video">
     <source src="cris.mp4" type="video/mp4">
   </video>
 
   <div class="absolute inset-0 bg-black/70"></div>
 
-  <div class="relative z-10 max-w-3xl text-center px-6">
+  <div class="relative z-10 text-center px-6 max-w-3xl">
     <h2 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
       Seja uma <span class="text-red-600">TS Model</span>
     </h2>
 
-    <p class="text-neutral-300 mb-8 text-lg">
-      Ganhe dinheiro, visibilidade e liberdade. Faça parte da maior plataforma premium de modelos exclusivas.
+    <p class="text-neutral-300 mb-8 text-lg font-light">
+      Plataforma premium para criadoras de conteúdo. Visibilidade, liberdade e crescimento.
     </p>
 
-    <a href="Modelos" class="px-10 py-4 bg-red-600 hover:bg-red-700 transition font-semibold tracking-widest rounded-xl">
-      VER MODELOS
-    </a>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#modelos"
+         class="px-10 py-4 bg-red-600 hover:bg-red-700 transition font-bold rounded-xl tracking-wide">
+        VER MODELOS
+      </a>
+
+      <!-- ✅ LINK CORRIGIDO -->
+      <a href="cadastro.html"
+         class="px-10 py-4 border border-white hover:bg-white hover:text-black transition font-bold rounded-xl tracking-wide">
+        QUERO ME CADASTRAR
+      </a>
+    </div>
   </div>
 </section>
 
-<!-- MODELOS -->
-<section id="modelos" class="max-w-7xl mx-auto px-6 py-24">
+<section id="modelos" class="max-w-7xl mx-auto px-6 py-24 scroll-mt-28">
   <h3 class="text-4xl font-bold mb-16 text-center">
     Nossas <span class="text-red-600">Modelos</span>
   </h3>
 
-  <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-
-    <div class="card group relative">
-      <img onclick="openModal(this.src)" src="WhatsApp Image 2026-02-06 at 01.38.59.jpeg"
-           class="cursor-pointer w-full h-[460px] object-cover">
-
-      <div class="overlay absolute inset-0 opacity-0 group-hover:opacity-100 transition flex flex-col justify-end p-6">
-        <h3 class="text-xl font-semibold">Cristina</h3>
-        <p class="text-neutral-400 text-sm mb-4">Modelo verificada - 19 anos</p>
-        <a href="https://wa.me/5534998209330" target="_blank"
-           class="border border-green-500 text-green-500 py-2 text-center tracking-widest hover:bg-green-500 hover:text-black transition rounded-lg">
-          CHAMAR
-        </a>
-      </div>
-    </div>
-
-    <div class="card group relative">
-      <img onclick="openModal(this.src)" src="Eduarda.jpeg"
-           class="cursor-pointer w-full h-[460px] object-cover">
-
-      <div class="overlay absolute inset-0 opacity-0 group-hover:opacity-100 transition flex flex-col justify-end p-6">
-        <h3 class="text-xl font-semibold">Eduarda</h3>
-        <p class="text-neutral-400 text-sm mb-4">Modelo verificada - 18 anos</p>
-        <a href="https://wa.me/559691286398" target="_blank"
-           class="border border-green-500 text-green-500 py-2 text-center tracking-widest hover:bg-green-500 hover:text-black transition rounded-lg">
-          CHAMAR
-        </a>
-      </div>
-    </div>
-
+  <div id="modelosGrid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+    <p class="col-span-full text-center text-neutral-500 italic">
+      Carregando modelos...
+    </p>
   </div>
 </section>
 
-<footer class="border-t border-neutral-800 py-10 text-center text-neutral-400 text-sm tracking-widest">
-  © 2026 TS PACKS — Todos os direitos reservados.
-</footer>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-<!-- MODAL -->
-<div id="modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50">
-  <button onclick="closeModal()"
-          class="absolute top-5 right-6 text-white text-4xl hover:text-red-600 transition">&times;</button>
+const supabase = createClient(
+  'https://ezcdhydjxielfhjqgblk.supabase.co',
+  'sb_publishable_hjJTkrZPGMgxAFDHPfzJ2A_DSKB1MEL'
+)
 
-  <img id="modalImg" class="max-w-[90%] max-h-[90%] rounded-xl shadow-2xl">
-</div>
+let isAdmin = false
 
-<script>
-  function openModal(src){
-    const modal = document.getElementById('modal')
-    modal.classList.remove('hidden')
-    modal.classList.add('flex')
-    document.getElementById('modalImg').src = src
+const { data: { session } } = await supabase.auth.getSession()
+if (session && session.user.email === 'SEUEMAIL@EMAIL.COM') {
+  isAdmin = true
+}
+
+async function removerModelo(id) {
+  if (!confirm('Deseja remover essa modelo?')) return
+  await supabase.from('modelos').delete().eq('id', id)
+  carregarModelos()
+}
+
+async function carregarModelos() {
+  const grid = document.getElementById('modelosGrid')
+
+  const { data } = await supabase
+    .from('modelos')
+    .select('*')
+    .eq('aprovado', true)
+    .order('id', { ascending: false })
+
+  if (!data || data.length === 0) {
+    grid.innerHTML = `
+      <p class="col-span-full text-center text-neutral-500 italic">
+        Nenhuma modelo disponível no momento
+      </p>`
+    return
   }
 
-  function closeModal(){
-    const modal = document.getElementById('modal')
-    modal.classList.add('hidden')
-    modal.classList.remove('flex')
-  }
+  grid.innerHTML = data.map(m => `
+    <div class="card">
+      <img src="${m.foto_url}" alt="${m.nome}">
+      <div class="overlay">
+        <h3 class="text-lg font-semibold">
+          ${m.nome}
+          <span class="text-blue-500 text-[10px]">✔ Verificada</span>
+        </h3>
+
+        <p class="text-neutral-400 text-sm mb-3">
+          ${m.idade ?? '--'} anos • Brasil
+        </p>
+
+        <a href="https://wa.me/${m.telefone}"
+           target="_blank"
+           class="w-full bg-green-600 py-2 rounded-xl font-bold text-center hover:bg-green-700 transition mb-2">
+          CHAMAR NO WHATSAPP
+        </a>
+
+        ${isAdmin ? `
+          <button onclick="removerModelo(${m.id})"
+            class="w-full bg-red-700 py-2 rounded-xl font-bold hover:bg-red-800 transition">
+            REMOVER (ADM)
+          </button>` : ''}
+      </div>
+    </div>
+  `).join('')
+}
+
+window.removerModelo = removerModelo
+carregarModelos()
 </script>
 
 </body>

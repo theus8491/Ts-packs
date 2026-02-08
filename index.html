@@ -93,7 +93,6 @@
       Seja uma <span class="text-red-600">TS Model</span>
     </h2>
 
-    <!-- ✅ TEXTO NOVO -->
     <p class="text-neutral-400 mt-4 text-sm md:text-base leading-relaxed">
       A <strong>TS Packs</strong> é uma plataforma <strong>100% independente</strong>,
       criada para conectar criadoras de conteúdo maiores de 18 anos ao seu público,
@@ -127,18 +126,22 @@
   </h3>
 
   <div id="modelosGrid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10"></div>
+
+  <!-- CONTADOR DE VIEWS -->
+  <div class="text-center mt-10 text-lg">
+    <p class="font-semibold">Visualizações do site:</p>
+    <p id="viewCount" class="text-2xl font-bold">0</p>
+  </div>
 </section>
 
 <!-- 🔐 BARRA LEGAL -->
 <div class="fixed bottom-0 left-0 w-full bg-black/70 backdrop-blur border-t border-white/10 z-50">
   <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap gap-4 justify-center text-[11px] text-neutral-300">
-
     <a href="aviso-18.html" class="hover:text-red-500">🔞 Aviso +18</a>
     <a href="termos.html" class="hover:text-red-500">Termos de Uso</a>
     <a href="privacidade.html" class="hover:text-red-500">Privacidade</a>
     <a href="anti-golpe.html" class="hover:text-red-500">Anti-Golpe</a>
     <a href="contato.html" class="hover:text-red-500">Contato</a>
-
   </div>
 </div>
 
@@ -173,7 +176,35 @@ async function carregarModelos() {
   `).join('')
 }
 
+async function atualizarViews() {
+  const viewCountElement = document.getElementById('viewCount')
+  
+  // Pega o contador de views do Supabase
+  const { data, error } = await supabase
+    .from('views')
+    .select('view_count')
+    .eq('id', 1) // Asegure-se de ter um ID de "view" específico para o contador
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  const viewCount = data[0]?.view_count || 0
+  viewCountElement.textContent = viewCount
+
+  // Atualiza a visualização para o Supabase (incrementa em 1)
+  const { error: updateError } = await supabase
+    .from('views')
+    .upsert({ id: 1, view_count: viewCount + 1 }, { onConflict: ['id'] })
+  
+  if (updateError) {
+    console.error(updateError)
+  }
+}
+
 carregarModelos()
+atualizarViews()
 </script>
 
 </body>

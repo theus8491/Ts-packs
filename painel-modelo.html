@@ -6,7 +6,7 @@
   <title>Cadastro • TS Packs</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -28,7 +28,6 @@
     Envie sua solicitação para análise
   </p>
 
-  <!-- FORM -->
   <div class="space-y-4">
 
     <input id="nome"
@@ -60,20 +59,19 @@
       </label>
     </div>
 
-    <!-- BOTÃO -->
     <button onclick="enviar()"
       class="w-full mt-6 bg-red-600 hover:bg-red-700 transition py-4 rounded-xl font-extrabold tracking-widest shadow-lg shadow-red-600/30">
       ENVIAR SOLICITAÇÃO
     </button>
 
-    <!-- MSG -->
     <div id="msg" class="text-center text-sm mt-4"></div>
 
   </div>
 </div>
 
 <script>
-const supabase = supabaseJs.createClient(
+/* ✅ SUPABASE CLIENT CORRETO */
+const supabaseClient = supabase.createClient(
   'https://ezcdhydjxielfhjqgblk.supabase.co',
   'sb_publishable_hjJTkrZPGMgxAFDHPfzJ2A_DSKB1MEL'
 )
@@ -103,27 +101,36 @@ async function enviar() {
     const ext = foto.name.split('.').pop()
     const path = `modelos/${Date.now()}.${ext}`
 
-    const { error: uploadError } = await supabase
-      .storage.from('fotos')
-      .upload(path, foto)
+    /* ✅ UPLOAD DA FOTO */
+    const { error: uploadError } = await supabaseClient
+      .storage
+      .from('fotos')
+      .upload(path, foto, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: foto.type
+      })
 
     if (uploadError) throw uploadError
 
     const foto_url =
       `https://ezcdhydjxielfhjqgblk.supabase.co/storage/v1/object/public/fotos/${path}`
 
-    const { error } = await supabase.from('modelos').insert({
-      nome,
-      telefone,
-      idade,
-      foto_url,
-      foto_path: path,
-      aprovado: false
-    })
+    /* ✅ SALVA NO BANCO */
+    const { error } = await supabaseClient
+      .from('modelos')
+      .insert({
+        nome,
+        telefone,
+        idade,
+        foto_url,
+        foto_path: path,
+        aprovado: false
+      })
 
     if (error) throw error
 
-    msg.innerHTML = `<span class="text-green-400">Solicitação enviada com sucesso!</span>`
+    msg.innerHTML = `<span class="text-green-400">Solicitação enviada com sucesso! Aguarde aprovação.</span>`
   } catch (err) {
     console.error(err)
     msg.innerHTML = `<span class="text-red-500">Erro ao enviar solicitação.</span>`

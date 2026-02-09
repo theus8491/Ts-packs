@@ -154,28 +154,7 @@ const supabase = createClient(
   'sb_publishable_hjJTkrZPGMgxAFDHPfzJ2A_DSKB1MEL'
 )
 
-async function carregarModelos() {
-  const grid = document.getElementById('modelosGrid')
-  const { data } = await supabase
-    .from('modelos')
-    .select('*')
-    .eq('aprovado', true)
-
-  grid.innerHTML = data.map(m => `
-    <div class="card">
-      <img src="${m.foto_url}" class="w-full h-full object-cover">
-      <div class="overlay">
-        <h3 class="font-semibold">${m.nome} <span class="text-blue-500 text-xs">✔</span></h3>
-        <p class="text-sm text-neutral-400">${m.idade ?? '--'} anos • Brasil</p>
-        <a href="https://wa.me/${m.telefone}" target="_blank"
-           class="mt-3 bg-green-600 py-2 rounded-xl text-center font-bold">
-          CHAMAR NO WHATSAPP
-        </a>
-      </div>
-    </div>
-  `).join('')
-}
-
+// Contador de Views
 async function atualizarViews() {
   const viewCountElement = document.getElementById('viewCount')
   
@@ -203,8 +182,28 @@ async function atualizarViews() {
   }
 }
 
-carregarModelos()
 atualizarViews()
+
+async function carregarModelos() {
+  const grid = document.getElementById('modelosGrid')
+  const { data } = await supabase.from('modelos').select('*').eq('aprovado', true)
+
+  grid.innerHTML = data.map(m => `
+    <div class="card">
+      <img src="${m.foto_url}" class="w-full h-full object-cover">
+      <div class="overlay">
+        <h3 class="font-semibold">${m.nome} <span class="text-blue-500 text-xs">✔</span></h3>
+        <p class="text-sm text-neutral-400">${m.idade ?? '--'} anos • Brasil</p>
+        <a href="https://wa.me/${m.telefone}" target="_blank"
+           class="mt-3 bg-green-600 py-2 rounded-xl text-center font-bold">
+          CHAMAR NO WHATSAPP
+        </a>
+      </div>
+    </div>
+  `).join('')
+}
+
+carregarModelos()
 </script>
 
 </body>

@@ -28,8 +28,8 @@
     <nav class="flex gap-4 items-center text-[10px] md:text-sm font-semibold uppercase">
       <a href="#inicio" class="text-red-600">INÍCIO</a>
       <a href="modelos.html" class="hover:text-red-600 transition">MODELOS</a>
-      <a href="cadastro.html" class="border px-3 py-1 rounded hover:bg-white hover:text-black transition">CADASTRE-SE</a>
-      <a href="login.html" class="border border-red-600 text-red-600 px-4 py-2 rounded">LOGIN ADM</a>
+      <a href="cadastro.html" class="border px-3 py-1 rounded">CADASTRE-SE</a>
+      <a href="login.html" class="hidden md:block border border-red-600 text-red-600 px-4 py-2 rounded hover:bg-red-600 hover:text-white transition">LOGIN ADM</a>
     </nav>
   </div>
 </header>
@@ -42,7 +42,6 @@
     <p class="text-neutral-400 mb-8 italic text-lg">Plataforma premium para criadoras independentes.</p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <a href="#vip" class="px-8 py-4 rounded-xl font-bold bg-yellow-400/20 text-yellow-400 border border-yellow-400/40 hover:bg-yellow-400 hover:text-black transition uppercase tracking-widest">VER MODELOS VIP</a>
-      <a href="modelos.html" class="px-8 py-4 rounded-xl font-bold bg-white/10 border border-white/20 hover:bg-white hover:text-black transition uppercase tracking-widest">VER TODAS MODELOS</a>
     </div>
   </div>
 </section>
@@ -62,17 +61,43 @@
   <div id="vitrine" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
 </section>
 
-<footer class="border-t border-white/10 bg-black/60 backdrop-blur py-12 text-center">
-    <div class="mb-6 flex flex-col items-center gap-2">
-        <span class="text-[9px] text-neutral-500 uppercase tracking-[0.3em]">Acessos Totais</span>
-        <div id="contador-global" class="text-xl font-mono font-bold text-red-600 bg-red-600/10 px-4 py-1 rounded-full border border-red-600/20">000000</div>
+<footer class="border-t border-white/10 bg-black/60 backdrop-blur py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-4 gap-12 mb-16">
+      <div class="col-span-2">
+        <h4 class="text-3xl font-extrabold tracking-widest italic mb-6">TS<span class="text-red-600">PACKS</span></h4>
+        <p class="text-neutral-500 text-sm leading-relaxed max-w-sm italic">
+          A maior vitrine de criadoras independentes do Brasil. Qualidade, segurança e exclusividade em um só lugar.
+        </p>
+        <div class="mt-8 flex flex-col items-start gap-2">
+            <span class="text-[9px] text-neutral-600 uppercase tracking-[0.3em]">Acessos Totais</span>
+            <div id="contador-global" class="text-xl font-mono font-bold text-red-600 bg-red-600/5 px-4 py-1 rounded-lg border border-red-600/20">000000</div>
+        </div>
+      </div>
+      
+      <div>
+        <h5 class="font-bold uppercase text-xs tracking-widest mb-6 text-white">Institucional</h5>
+        <ul class="space-y-4 text-sm text-neutral-500 font-medium">
+          <li><a href="privacidade.html" class="hover:text-red-600 transition">Privacidade</a></li>
+          <li><a href="termos.html" class="hover:text-red-600 transition">Termos de Uso</a></li>
+          <li><a href="anti-golpe.html" class="hover:text-red-600 transition">Guia Anti-Golpe</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="font-bold uppercase text-xs tracking-widest mb-6 text-white">Suporte</h5>
+        <ul class="space-y-4 text-sm text-neutral-500 font-medium">
+          <li><a href="contato.html" class="hover:text-red-600 transition">Contato</a></li>
+          <li><a href="cadastro.html" class="hover:text-red-600 transition">Cadastrar Perfil</a></li>
+          <li><span class="text-red-600 font-bold uppercase text-[10px]">Acesso +18 Anos</span></li>
+        </ul>
+      </div>
     </div>
-    <div class="flex flex-wrap justify-center gap-8 text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-8">
-      <a href="modelos.html">Modelos</a>
-      <a href="cadastro.html">Cadastro</a>
-      <a href="#" class="text-red-500 font-bold">+18 Anos</a>
+    
+    <div class="pt-8 border-t border-white/5 text-center">
+      <p class="text-[10px] text-neutral-600 uppercase tracking-widest font-bold">© 2026 TS Packs. Todos os direitos reservados.</p>
     </div>
-    <p class="text-[10px] text-neutral-600 uppercase">© 2026 TS Packs. Todos os direitos reservados.</p>
+  </div>
 </footer>
 
 <script>
@@ -114,15 +139,16 @@
     }).join('');
   }
 
-  async function totalizador() {
-    const { data } = await _supabase.from('stats').select('total_visitas').eq('id', 1).single();
-    let novo = (data?.total_visitas || 0) + 1;
-    await _supabase.from('stats').update({ total_visitas: novo }).eq('id', 1);
-    document.getElementById('contador-global').innerText = novo.toString().padStart(6, '0');
+  async function gerenciarVisitasGlobais() {
+    const display = document.getElementById('contador-global');
+    let { data: stats } = await _supabase.from('stats').select('total_visitas').eq('id', 1).single();
+    let novoTotal = (stats?.total_visitas || 0) + 1;
+    await _supabase.from('stats').update({ total_visitas: novoTotal }).eq('id', 1);
+    if (display) display.innerText = novoTotal.toString().padStart(6, '0');
   }
 
   carregarModelosVIP();
-  totalizador();
+  gerenciarVisitasGlobais();
 </script>
 </body>
-</html>s
+</html>

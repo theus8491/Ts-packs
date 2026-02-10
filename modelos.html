@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TS Packs - Modelos</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Poppins,sans-serif}
+  .card{ border-radius:20px; overflow:hidden; background:#000; border:1px solid #1f1f1f; height:460px; position:relative; transition:.3s; }
+  .card:hover{ transform:translateY(-6px); border-color:#dc2626; box-shadow:0 10px 25px rgba(220,38,38,.25); }
+  .overlay{ position:absolute; inset:0; background:linear-gradient(180deg,transparent 20%,rgba(0,0,0,.9) 90%); display:flex; flex-direction:column; justify-content:flex-end; padding:20px; }
+  .foto-modelo { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+</style>
+</head>
+<body class="bg-neutral-950 text-white">
+
+<header class="fixed w-full z-50 bg-black/50 backdrop-blur">
+  <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+    <h1 class="text-3xl font-extrabold tracking-widest italic">TS<span class="text-red-600">PACKS</span></h1>
+    <nav class="flex gap-6 items-center text-sm font-semibold uppercase">
+      <a href="index.html" class="hover:text-red-600 transition">INÍCIO</a>
+      <a href="modelos.html" class="text-red-600">MODELOS</a>
+      <a href="cadastro.html" class="border px-4 py-2 rounded-lg hover:bg-white hover:text-black transition text-[10px] md:text-sm">QUERO ME CADASTRAR</a>
+    </nav>
+  </div>
+</header>
+
+<section class="pt-40 pb-20 text-center px-6">
+  <h2 class="text-4xl md:text-5xl font-extrabold mb-4 italic uppercase text-white">Nossas <span class="text-red-600">Modelos</span></h2>
+  <p class="text-neutral-400 max-w-2xl mx-auto italic">Perfis verificados da plataforma TS Packs. Maiores de 18 anos.</p>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 pb-24">
+  <div id="modelosGrid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <p class="text-center col-span-full text-neutral-500 animate-pulse uppercase text-xs font-bold tracking-widest">Buscando modelos...</p>
+  </div>
+</section>
+
+<script>
+// CONFIGURAÇÃO ATUALIZADA
+const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
+
+async function carregarModelos(){
+  const grid = document.getElementById('modelosGrid');
+
+  try {
+    // Busca modelos aprovadas. 
+    // Removi o filtro de VIP para evitar erro caso a coluna não exista.
+    const { data, error } = await _supabase
+      .from('modelos')
+      .select('*')
+      .eq('aprovado', true)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      grid.innerHTML = data.map(m => {
+        // Limpeza do número de whatsapp
+        const zapLimpo = m.whatsapp ? m.whatsapp.replace(/\D/g, '') : '';
+        
+        return `
+          <div class="card">
+            <img src="${m.foto_url}" class="foto-modelo" loading="lazy" onerror="this.src='https://via.placeholder.com/400x600?text=Foto+Indisponivel'">
+            <div class="overlay text-center">
+              <h3 class="font-black text-xl uppercase italic">${m.nome}</h3>
+              <p class="text-[10px] text-neutral-300 mt-1 font-bold uppercase">${m.idade || '18+'} ANOS • VERIFICADA</p>
+              <a href="https://wa.me/55${zapLimpo}" target="_blank" class="mt-4 bg-green-600 hover:bg-green-700 py-3 rounded-xl text-center font-black text-sm transition uppercase shadow-lg shadow-green-900/20">CHAMAR NO WHATSAPP</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      grid.innerHTML = `<p class="col-span-full text-center text-neutral-600 uppercase text-xs font-bold tracking-widest">Nenhuma modelo aprovada no momento.</p>`;
+    }
+
+  } catch (err) {
+    console.error("Erro Supabase:", err);
+    grid.innerHTML = `<p class="col-span-full text-center text-red-500 uppercase text-xs font-bold">Erro ao carregar modelos. Verifique o banco de dados.</p>`;
+  }
+}
+
+carregarModelos();
+</script>
+</body>
+</html>

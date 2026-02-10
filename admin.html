@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Controle - TS Packs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; background-color: #0a0a0a; color: white; }
+    .card-adm { background: #121212; border: 1px solid #333; border-radius: 15px; padding: 15px; transition: 0.3s; }
+    .card-adm:hover { border-color: #555; }
+    .status-tag { font-size: 10px; padding: 2px 8px; border-radius: 5px; text-transform: uppercase; font-weight: bold; }
+  </style>
+</head>
+<body class="p-6">
+
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-8 border-b border-neutral-800 pb-6">
+      <h1 class="text-2xl font-black italic uppercase text-red-600">TS <span class="text-white">ADMIN</span></h1>
+      <div class="flex gap-3">
+          <button onclick="carregarLista('novas')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-[10px] font-bold uppercase">Novas Solicitações</button>
+          <button onclick="carregarLista('aprovadas')" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-[10px] font-bold uppercase">Modelos Online</button>
+      </div>
+    </div>
+
+    <div id="lista-modelos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <p class="text-neutral-500">Selecione uma categoria acima...</p>
+    </div>
+  </div>
+
+  <script>
+    const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
+
+    async function carregarLista(tipo) {
+      const container = document.getElementById('lista-modelos');
+      container.innerHTML = "<p class='animate-pulse'>Carregando...</p>";
+
+      let query = _supabase.from('modelos').select('*');
+
+      if (tipo === 'novas') {
+        query = query.eq('aprovado', false);
+      } else {
+        query = query.eq('aprovado', true);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
+
+      if (error || !data.length) {
+        container.innerHTML = "<p class='text-neutral-600 uppercase text-xs font-bold'>Nada encontrado aqui.</p>";
+        return;
+      }
+
+      container.innerHTML = data.map(m => `
+        <div class="card-adm">
+          <img src="${m.foto_url}" class="w-full h-48 object-cover rounded-lg mb-4 border border-neutral-800">
+          <div class="mb-4">
+            <h3 class="text-lg font-bold uppercase">${m.nome}</h3>
+            <p class="text-xs text-neutral-400 mb-2 italic">${m.descricao || 'Sem descrição'}</p>
+            <span class="status-tag ${m.vip ? 'bg-yellow-500 text-black' : 'bg-blue-500 text-white'}">
+              ${m.vip ? '⭐ VIP' : '🔵 NORMAL'}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="updateStatus('${m.id}', true, true)" class="bg-yellow-600 hover:bg-yellow-700 text-[9px] font-bold p-2 rounded uppercase">
+              Aprovar/Mover VIP
+            </button>
+            
+            <button onclick="updateStatus('${m.id}', true, false)" class="bg-blue-600 hover:bg-blue-700 text-[9px] font-bold p-2 rounded uppercase">
+              Aprovar/Mover Normal
+            </button>
+
+            <button onclick="updateStatus('${m.id}', false, ${m.vip})" class="col-span-2 bg-neutral-800 hover:bg-red-900 text-[9px] font-bold p-2 rounded uppercase transition">
+              Remover do Site (Fica em Oculto)
+            </button>
+
+            <button onclick="deletarModelo('${m.id}')" class="col-span-2 text-[8px] text-neutral-600 mt-2 hover:text-red-500 uppercase tracking-widest">
+              Apagar permanentemente do banco
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function updateStatus(id, aprovado, vip) {
+      const { error } = await _supabase
+        .from('modelos')
+        .update({ aprovado: aprovado, vip: vip })
+        .eq('id', id);
+
+      if (error) alert("Erro ao atualizar!");
+      else location.reload();
+    }
+
+    async function deletarModelo(id) {
+      if (confirm("Deseja apagar os dados e a foto para sempre?")) {
+        const { error } = await _supabase.from('modelos').delete().eq('id', id);
+        if (error) alert("Erro ao deletar!");
+        else location.reload();
+      }
+    }
+
+    // Inicia carregando as novas solicitações
+    carregarLista('novas');
+  </script>
+</body>
+</html>

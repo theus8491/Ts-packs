@@ -3,112 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Login ADM • TS Packs</title>
-
-  <!-- ajuda o Google a não marcar como golpe -->
-  <meta name="robots" content="index, follow">
-
+  <title>Login ADM - TS Packs</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    body { font-family: 'Poppins', sans-serif; }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
+<body class="bg-neutral-950 text-white font-[Poppins] flex items-center justify-center min-h-screen p-6">
 
-<body class="bg-neutral-950 flex items-center justify-center min-h-screen text-white">
-
-  <div class="w-full max-w-sm bg-black/70 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
-
-    <!-- LOGO -->
-    <div class="text-center mb-10">
-      <h1 class="text-3xl font-semibold tracking-widest">
-        <span class="text-white">TS</span>
-        <span class="text-red-600 font-bold">PACKS</span>
-      </h1>
-      <p class="text-xs uppercase tracking-[0.25em] text-neutral-500 mt-2">
-        Painel Administrativo
-      </p>
-    </div>
-
-    <!-- FORM -->
-    <form id="loginForm" class="space-y-6">
-
+  <div class="w-full max-w-sm bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-2xl">
+    <h1 class="text-2xl font-black italic text-center mb-6 uppercase tracking-widest">
+      TS<span class="text-red-600">PACKS</span> <span class="text-sm block text-neutral-500 not-italic">Painel Administrativo</span>
+    </h1>
+    
+    <div class="space-y-4">
       <div>
-        <label class="block text-[11px] uppercase tracking-widest text-neutral-400 mb-2">
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          class="w-full px-4 py-3 rounded-xl bg-neutral-900 border border-white/10 outline-none focus:border-red-600 transition"
-          placeholder="admin@email.com"
-          required
-        >
+        <label class="text-[10px] uppercase font-bold text-neutral-500 ml-1">E-mail</label>
+        <input id="email" type="email" placeholder="admin@tspacks.com" class="w-full bg-black border border-neutral-700 p-3 rounded-lg focus:border-red-600 outline-none transition">
       </div>
-
       <div>
-        <label class="block text-[11px] uppercase tracking-widest text-neutral-400 mb-2">
-          Senha
-        </label>
-        <input
-          type="password"
-          id="password"
-          class="w-full px-4 py-3 rounded-xl bg-neutral-900 border border-white/10 outline-none focus:border-red-600 transition"
-          placeholder="••••••••"
-          required
-        >
+        <label class="text-[10px] uppercase font-bold text-neutral-500 ml-1">Senha</label>
+        <input id="senha" type="password" placeholder="••••••••" class="w-full bg-black border border-neutral-700 p-3 rounded-lg focus:border-red-600 outline-none transition">
       </div>
-
-      <button
-        type="submit"
-        class="w-full py-3 rounded-xl font-semibold tracking-widest bg-red-600 hover:bg-red-700 transition"
-      >
-        ENTRAR
+      <button onclick="logar()" id="btnLogin" class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-lg font-bold uppercase tracking-widest transition shadow-lg shadow-red-900/20">
+        Entrar no Painel
       </button>
-    </form>
-
-    <!-- ERRO -->
-    <p id="erro" class="text-center text-sm text-red-500 mt-6 hidden">
-      Email ou senha inválidos
-    </p>
-
+    </div>
+    <p id="erro" class="text-red-500 text-[10px] mt-4 text-center uppercase font-bold tracking-tighter"></p>
   </div>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  <script>
+    // Configuração com a sua URL e Key Anon
+    const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
 
-const supabase = createClient(
-  'https://ezcdhydjxielfhjqgblk.supabase.co',
-  'sb_publishable_hjJTkrZPGMgxAFDHPfzJ2A_DSKB1MEL'
-)
+    async function logar() {
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+      const btn = document.getElementById('btnLogin');
+      const erroMsg = document.getElementById('erro');
 
-const form = document.getElementById('loginForm')
-const erro = document.getElementById('erro')
+      if(!email || !senha) {
+          erroMsg.innerText = "Preencha todos os campos.";
+          return;
+      }
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault()
-  erro.classList.add('hidden')
+      btn.disabled = true;
+      btn.innerText = "VERIFICANDO...";
+      erroMsg.innerText = "";
 
-  const email = document.getElementById('email').value.trim()
-  const password = document.getElementById('password').value
+      try {
+        const { data, error } = await _supabase.auth.signInWithPassword({ 
+            email: email, 
+            password: senha 
+        });
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  })
+        if (error) throw error;
 
-  if (error) {
-    erro.classList.remove('hidden')
-    return
-  }
+        // Sucesso: Redireciona para o admin
+        window.location.href = "admin.html";
 
-  // login ok
-  window.location.href = 'painel-adm.html'
-})
-</script>
+      } catch (error) {
+        erroMsg.innerText = "ACESSO NEGADO: " + error.message;
+        btn.disabled = false;
+        btn.innerText = "Entrar no Painel";
+      }
+    }
 
+    // Permite dar 'Enter' para logar
+    document.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') logar();
+    });
+  </script>
 </body>
 </html>

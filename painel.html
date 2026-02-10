@@ -44,13 +44,14 @@
       font-weight: bold;
     }
 
+    /* Estilo para a descrição/tabela */
     .descricao-texto {
       font-size: 13px;
       color: #a3a3a3;
       line-height: 1.5;
       margin-top: 10px;
       display: -webkit-box;
-      -webkit-line-clamp: 3; 
+      -webkit-line-clamp: 3; /* Limita a 3 linhas para não ficar gigante */
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -79,70 +80,43 @@
     <h1 class="text-3xl font-extrabold tracking-tighter italic">
       TS<span class="text-red-600">PACKS</span>
     </h1>
-    <nav class="flex gap-3 md:gap-6 items-center text-[10px] md:text-[11px] font-bold uppercase tracking-widest">
-      <a href="#inicio" class="hover:text-red-600 transition hidden sm:block">INÍCIO</a>
+    <nav class="hidden md:flex gap-6 items-center text-[11px] font-bold uppercase tracking-widest">
+      <a href="#inicio" class="hover:text-red-600 transition">INÍCIO</a>
       <a href="modelos.html" class="hover:text-red-600 transition">MODELOS</a>
-      <a href="cadastro.html" class="bg-white/10 border border-white/20 px-3 py-2 rounded-lg hover:bg-white hover:text-black transition">CADASTRAR</a>
-      <a href="login.html" class="border border-red-600 text-red-600 px-3 py-2 rounded-lg hover:bg-red-600 hover:text-white transition">LOGIN ADM</a>
+      <a href="cadastro.html" class="bg-red-600 px-4 py-2 rounded-full hover:bg-red-700 transition">QUERO ME CADASTRAR</a>
     </nav>
   </div>
 </header>
 
-<section id="inicio" class="relative min-h-[85vh] flex items-center justify-center">
+<section id="inicio" class="relative min-h-[80vh] flex items-center justify-center">
   <video autoplay muted loop playsinline class="hero-video">
     <source src="cris.mp4" type="video/mp4">
   </video>
   <div class="absolute inset-0 bg-black/70"></div>
   <div class="relative z-10 text-center max-w-3xl px-6">
-    <h2 class="text-5xl md:text-7xl font-black mb-4 italic uppercase leading-none">TS <span class="text-red-600">MODELS</span></h2>
-    <p class="text-neutral-400 italic text-lg md:text-xl mb-8">Plataforma Premium & Independente para Criadoras.</p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="#vip" class="px-8 py-4 rounded-xl font-bold bg-yellow-400/20 text-yellow-400 border border-yellow-400/40 hover:bg-yellow-400 hover:text-black transition uppercase tracking-widest">VER MODELOS VIP</a>
-      <a href="modelos.html" class="px-8 py-4 rounded-xl font-bold bg-white/10 border border-white/20 hover:bg-white hover:text-black transition uppercase tracking-widest">VER TODAS MODELOS</a>
-    </div>
+    <h2 class="text-6xl font-black mb-4 italic uppercase">TS <span class="text-red-600">MODELS</span></h2>
+    <p class="text-neutral-400 italic text-xl mb-8">Premium & Independente.</p>
   </div>
 </section>
 
-<section class="max-w-5xl mx-auto px-6 py-24 text-center">
-  <h3 class="text-3xl md:text-5xl font-extrabold mb-6 italic uppercase leading-tight">Uma plataforma <span class="text-red-600">premium</span>,<br> segura e independente</h3>
-  <p class="text-neutral-400 leading-relaxed text-lg md:text-xl italic">
-    A <strong class="text-white italic">TS Packs</strong> conecta criadoras verificadas a clientes reais, sem intermediários e com total transparência para o seu conteúdo.
-  </p>
-</section>
-
-<section id="vip" class="max-w-7xl mx-auto px-6 pb-32">
+<section id="vip" class="max-w-7xl mx-auto px-6 py-24">
   <div class="flex flex-col items-center mb-16 text-center">
-    <span class="text-yellow-400 font-bold tracking-[0.3em] uppercase text-xs mb-2">Destaques Selecionados</span>
+    <span class="text-yellow-400 font-bold tracking-[0.3em] uppercase text-xs mb-2">Destaques da Semana</span>
     <h3 class="text-4xl font-black italic uppercase">⭐ Modelos VIP</h3>
     <div class="h-1 w-20 bg-yellow-400 mt-4 rounded-full"></div>
   </div>
   
   <div id="vitrine" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      <p class="text-center col-span-full text-neutral-600 animate-pulse uppercase text-xs font-bold py-20">Sincronizando com o banco de dados...</p>
+      <p class="text-center col-span-full text-neutral-600 animate-pulse uppercase text-xs font-bold py-20">Sincronizando vitrine...</p>
   </div>
 </section>
 
-<footer class="border-t border-white/10 bg-black/60 backdrop-blur py-16">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <h4 class="text-2xl font-extrabold tracking-widest mb-6 italic uppercase">TS<span class="text-red-600">PACKS</span></h4>
-    <div class="flex flex-wrap justify-center gap-6 text-[10px] font-semibold text-neutral-400 uppercase tracking-widest mb-8">
-      <a href="modelos.html" class="hover:text-white transition">Modelos</a>
-      <a href="cadastro.html" class="hover:text-white transition">Cadastro</a>
-      <a href="login.html" class="text-neutral-500 hover:text-white transition italic">Acesso Restrito ADM</a>
-      <a href="#" class="text-red-500 font-bold">+18 Anos</a>
-    </div>
-    <p class="text-[9px] text-neutral-600 uppercase tracking-widest">© 2026 TS Packs. Todos os direitos reservados.</p>
-  </div>
-</footer>
-
 <script>
-  // Conexão direta com seu banco
   const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
 
   async function carregarModelosVIP() {
     const vitrine = document.getElementById('vitrine');
 
-    // Busca no banco: só quem está APROVADO e é VIP
     const { data, error } = await _supabase
       .from('modelos')
       .select('*')
@@ -150,19 +124,11 @@
       .eq('vip', true)
       .order('created_at', { ascending: false });
 
-    if (error) {
-        console.error("Erro Supabase:", error);
-        vitrine.innerHTML = "<p class='col-span-full text-center text-red-500'>Erro ao carregar vitrine.</p>";
+    if (error || !data || data.length === 0) {
+        vitrine.innerHTML = "<p class='col-span-full text-center text-neutral-600 uppercase text-xs font-bold py-20'>Nenhuma modelo VIP disponível.</p>";
         return;
     }
 
-    // Se você deletou no painel, 'data' vem vazio e limpa a tela aqui
-    if (!data || data.length === 0) {
-        vitrine.innerHTML = "<p class='col-span-full text-center text-neutral-600 uppercase text-xs font-bold py-20 tracking-widest'>Nenhuma modelo VIP em destaque hoje.</p>";
-        return;
-    }
-
-    // Renderiza os cards com as infos completas
     vitrine.innerHTML = data.map(m => {
       const zapLimpo = m.whatsapp ? m.whatsapp.replace(/\D/g, '') : '';
       
@@ -182,7 +148,7 @@
             </div>
             
             <p class="descricao-texto">
-                ${m.descricao || 'Chame no WhatsApp para conferir minha tabela e fotos exclusivas.'}
+                ${m.descricao || 'Disponível para conteúdos e encontros. Chame no WhatsApp para conferir minha tabela.'}
             </p>
 
             <a href="https://wa.me/55${zapLimpo}" target="_blank" class="btn-whats">
@@ -194,7 +160,6 @@
     }).join('');
   }
 
-  // Inicia a função
   carregarModelosVIP();
 </script>
 

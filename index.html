@@ -4,98 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TS Packs - Plataforma Premium</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-
   <style>
     body { font-family: 'Poppins', sans-serif; }
     .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-    
-    .card-modelo {
-      background: linear-gradient(180deg, #121212 0%, #000 100%);
-      border: 1px solid #333;
-      border-radius: 20px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.3s ease;
-      height: 100%;
-    }
-    .card-modelo:hover { transform: translateY(-8px); border-color: #facc15; box-shadow: 0 10px 30px rgba(250, 204, 21, 0.1); }
-
-    .foto-box {
-      width: 100%;
-      height: 380px; 
-      object-fit: cover;
-      object-position: center top;
-      background-color: #1a1a1a;
-    }
-
-    .tag-rosa {
-      border: 1px solid #ff007f;
-      color: #ff007f;
-      font-size: 9px;
-      padding: 2px 8px;
-      border-radius: 20px;
-      background: rgba(255, 0, 127, 0.05);
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-
-    .descricao-texto {
-      font-size: 13px;
-      color: #a3a3a3;
-      line-height: 1.5;
-      margin-top: 10px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3; 
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .btn-whats {
-      background: linear-gradient(90deg, #25d366 0%, #128c7e 100%);
-      color: white;
-      text-align: center;
-      padding: 14px;
-      font-weight: 800;
-      border-radius: 12px;
-      margin: 15px;
-      margin-top: auto;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: filter 0.2s;
-    }
-    .btn-whats:hover { filter: brightness(1.1); }
+    .card-modelo { background: #121212; border: 1px solid #333; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; height: 100%; }
+    .card-modelo:hover { transform: translateY(-5px); border-color: #facc15; }
+    .foto-box { width: 100%; height: 350px; object-fit: cover; object-position: center top; background-color: #1a1a1a; }
+    .tag-rosa { border: 1px solid #ff007f; color: #ff007f; font-size: 10px; padding: 2px 10px; border-radius: 20px; background: rgba(255, 0, 127, 0.1); text-transform: uppercase; font-weight: bold; }
+    .descricao-texto { font-size: 13px; color: #a3a3a3; line-height: 1.5; margin-top: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .btn-whats { background-color: #25d366; color: white; text-align: center; padding: 12px; font-weight: bold; border-radius: 10px; margin: 15px; margin-top: auto; text-transform: uppercase; transition: opacity 0.2s; }
+    .btn-whats:hover { opacity: 0.9; }
+    .stats-badge { background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); padding: 2px 8px; border-radius: 8px; font-size: 10px; color: #888; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 4px; }
   </style>
 </head>
-
 <body class="bg-neutral-950 text-white">
 
-<header class="fixed w-full z-50 bg-black/60 backdrop-blur-md border-b border-white/5">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-3xl font-extrabold tracking-tighter italic">
-      TS<span class="text-red-600">PACKS</span>
-    </h1>
-    <nav class="flex gap-3 md:gap-6 items-center text-[10px] md:text-[11px] font-bold uppercase tracking-widest">
-      <a href="#inicio" class="hover:text-red-600 transition hidden sm:block">INÍCIO</a>
+<header class="fixed w-full z-50 bg-black/50 backdrop-blur border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+    <h1 class="text-3xl font-extrabold tracking-widest italic">TS<span class="text-red-600">PACKS</span></h1>
+    <nav class="flex gap-4 items-center text-[10px] md:text-sm font-semibold uppercase">
+      <a href="#inicio" class="text-red-600">INÍCIO</a>
       <a href="modelos.html" class="hover:text-red-600 transition">MODELOS</a>
-      <a href="cadastro.html" class="bg-white/10 border border-white/20 px-3 py-2 rounded-lg hover:bg-white hover:text-black transition">CADASTRAR</a>
-      <a href="login.html" class="border border-red-600 text-red-600 px-3 py-2 rounded-lg hover:bg-red-600 hover:text-white transition">LOGIN ADM</a>
+      <a href="cadastro.html" class="border px-3 py-1 rounded hover:bg-white hover:text-black transition">CADASTRE-SE</a>
+      <a href="login.html" class="border border-red-600 text-red-600 px-4 py-2 rounded">LOGIN ADM</a>
     </nav>
   </div>
 </header>
 
-<section id="inicio" class="relative min-h-[85vh] flex items-center justify-center">
-  <video autoplay muted loop playsinline class="hero-video">
-    <source src="cris.mp4" type="video/mp4">
-  </video>
+<section id="inicio" class="relative min-h-screen flex items-center justify-center">
+  <video autoplay muted loop playsinline class="hero-video"><source src="cris.mp4" type="video/mp4"></video>
   <div class="absolute inset-0 bg-black/70"></div>
   <div class="relative z-10 text-center max-w-3xl px-6">
-    <h2 class="text-5xl md:text-7xl font-black mb-4 italic uppercase leading-none">TS <span class="text-red-600">MODELS</span></h2>
-    <p class="text-neutral-400 italic text-lg md:text-xl mb-8">Plataforma Premium & Independente para Criadoras.</p>
+    <h2 class="text-5xl font-extrabold mb-6 italic uppercase leading-none">Seja uma <span class="text-red-600">TS Model</span></h2>
+    <p class="text-neutral-400 mb-8 italic text-lg">Plataforma premium para criadoras independentes.</p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <a href="#vip" class="px-8 py-4 rounded-xl font-bold bg-yellow-400/20 text-yellow-400 border border-yellow-400/40 hover:bg-yellow-400 hover:text-black transition uppercase tracking-widest">VER MODELOS VIP</a>
       <a href="modelos.html" class="px-8 py-4 rounded-xl font-bold bg-white/10 border border-white/20 hover:bg-white hover:text-black transition uppercase tracking-widest">VER TODAS MODELOS</a>
@@ -103,100 +47,82 @@
   </div>
 </section>
 
-<section class="max-w-5xl mx-auto px-6 py-24 text-center">
-  <h3 class="text-3xl md:text-5xl font-extrabold mb-6 italic uppercase leading-tight">Uma plataforma <span class="text-red-600">premium</span>,<br> segura e independente</h3>
-  <p class="text-neutral-400 leading-relaxed text-lg md:text-xl italic">
-    A <strong class="text-white italic">TS Packs</strong> conecta criadoras verificadas a clientes reais, sem intermediários e com total transparência para o seu conteúdo.
+<section class="max-w-5xl mx-auto px-6 py-20 text-center">
+  <h3 class="text-4xl font-extrabold mb-6 italic uppercase leading-tight">Uma plataforma <span class="text-red-600">premium</span>, segura e independente</h3>
+  <p class="text-neutral-400 leading-relaxed text-lg italic">
+    A <strong class="text-white italic">TS Packs</strong> conecta criadoras verificadas a clientes reais, sem intermediários e com total transparência.
   </p>
 </section>
 
 <section id="vip" class="max-w-7xl mx-auto px-6 pb-32">
   <div class="flex flex-col items-center mb-16 text-center">
-    <span class="text-yellow-400 font-bold tracking-[0.3em] uppercase text-xs mb-2">Destaques Selecionados</span>
-    <h3 class="text-4xl font-black italic uppercase">⭐ Modelos VIP</h3>
-    <div class="h-1 w-20 bg-yellow-400 mt-4 rounded-full"></div>
+    <h3 class="text-4xl font-bold italic uppercase text-yellow-400">⭐ Modelos VIP</h3>
+    <div class="h-1 w-24 bg-yellow-400 mt-2"></div>
   </div>
-  
-  <div id="vitrine" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      <p class="text-center col-span-full text-neutral-600 animate-pulse uppercase text-xs font-bold py-20">Sincronizando com o banco de dados...</p>
-  </div>
+  <div id="vitrine" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
 </section>
 
-<footer class="border-t border-white/10 bg-black/60 backdrop-blur py-16">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <h4 class="text-2xl font-extrabold tracking-widest mb-6 italic uppercase">TS<span class="text-red-600">PACKS</span></h4>
-    <div class="flex flex-wrap justify-center gap-6 text-[10px] font-semibold text-neutral-400 uppercase tracking-widest mb-8">
-      <a href="modelos.html" class="hover:text-white transition">Modelos</a>
-      <a href="cadastro.html" class="hover:text-white transition">Cadastro</a>
-      <a href="login.html" class="text-neutral-500 hover:text-white transition italic">Acesso Restrito ADM</a>
+<footer class="border-t border-white/10 bg-black/60 backdrop-blur py-12 text-center">
+    <div class="mb-6 flex flex-col items-center gap-2">
+        <span class="text-[9px] text-neutral-500 uppercase tracking-[0.3em]">Acessos Totais</span>
+        <div id="contador-global" class="text-xl font-mono font-bold text-red-600 bg-red-600/10 px-4 py-1 rounded-full border border-red-600/20">000000</div>
+    </div>
+    <div class="flex flex-wrap justify-center gap-8 text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-8">
+      <a href="modelos.html">Modelos</a>
+      <a href="cadastro.html">Cadastro</a>
       <a href="#" class="text-red-500 font-bold">+18 Anos</a>
     </div>
-    <p class="text-[9px] text-neutral-600 uppercase tracking-widest">© 2026 TS Packs. Todos os direitos reservados.</p>
-  </div>
+    <p class="text-[10px] text-neutral-600 uppercase">© 2026 TS Packs. Todos os direitos reservados.</p>
 </footer>
 
 <script>
-  // Conexão direta com seu banco
   const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
 
+  async function registrarAcao(id, coluna, valor) {
+    const d = {}; d[coluna] = (valor || 0) + 1;
+    await _supabase.from('modelos').update(d).eq('id', id);
+  }
+
   async function carregarModelosVIP() {
+    const { data } = await _supabase.from('modelos').select('*').eq('aprovado', true).eq('vip', true).order('created_at', { ascending: false });
     const vitrine = document.getElementById('vitrine');
+    if (!data) return;
 
-    // Busca no banco: só quem está APROVADO e é VIP
-    const { data, error } = await _supabase
-      .from('modelos')
-      .select('*')
-      .eq('aprovado', true)
-      .eq('vip', true)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-        console.error("Erro Supabase:", error);
-        vitrine.innerHTML = "<p class='col-span-full text-center text-red-500'>Erro ao carregar vitrine.</p>";
-        return;
-    }
-
-    // Se você deletou no painel, 'data' vem vazio e limpa a tela aqui
-    if (!data || data.length === 0) {
-        vitrine.innerHTML = "<p class='col-span-full text-center text-neutral-600 uppercase text-xs font-bold py-20 tracking-widest'>Nenhuma modelo VIP em destaque hoje.</p>";
-        return;
-    }
-
-    // Renderiza os cards com as infos completas
     vitrine.innerHTML = data.map(m => {
-      const zapLimpo = m.whatsapp ? m.whatsapp.replace(/\D/g, '') : '';
-      
+      const zap = m.whatsapp.replace(/\D/g, '');
+      const v = m.views || 0;
+      const c = m.clicks || 0;
       return `
         <div class="card-modelo">
           <div class="relative">
-            <img src="${m.foto_url}" class="foto-box" alt="${m.nome}" onerror="this.src='https://via.placeholder.com/400x600?text=Foto+Indisponivel'">
-            <div class="absolute bottom-4 left-4 flex gap-2">
-                <span class="tag-rosa">Verificada</span>
-            </div>
+             <div class="absolute top-3 right-3 flex gap-2">
+                <div class="stats-badge">👁️ ${v}</div>
+                <div class="stats-badge text-green-400">💬 ${c}</div>
+             </div>
+             <a href="https://wa.me/55${zap}" target="_blank" onclick="registrarAcao('${m.id}', 'views', ${v})">
+                <img src="${m.foto_url}" class="foto-box">
+             </a>
           </div>
-          
-          <div class="p-5 flex-1 flex flex-col">
-            <div class="flex justify-between items-start">
-                <h4 class="text-2xl font-black uppercase italic text-yellow-400">${m.nome}</h4>
-                <span class="text-[10px] font-bold text-neutral-500 bg-white/5 px-2 py-1 rounded">${m.idade || '18+'} ANOS</span>
-            </div>
-            
-            <p class="descricao-texto">
-                ${m.descricao || 'Chame no WhatsApp para conferir minha tabela e fotos exclusivas.'}
-            </p>
-
-            <a href="https://wa.me/55${zapLimpo}" target="_blank" class="btn-whats">
-                WhatsApp
-            </a>
+          <div class="p-5 text-center flex-1 flex flex-col">
+            <h4 class="text-xl font-bold uppercase italic">${m.nome}</h4>
+            <p class="text-gray-500 text-[10px] mb-2 font-bold uppercase">${m.idade || '18+'} ANOS — VIP ⭐</p>
+            <div class="flex justify-center mb-2"><span class="tag-rosa">Verificada</span></div>
+            <p class="descricao-texto text-left">${m.descricao || 'Chame no WhatsApp para conferir minha tabela e conteúdos exclusivos.'}</p>
+            <a href="https://wa.me/55${zap}" target="_blank" onclick="registrarAcao('${m.id}', 'clicks', ${c})" class="btn-whats">WhatsApp</a>
           </div>
-        </div>
-      `;
+        </div>`;
     }).join('');
   }
 
-  // Inicia a função
-  carregarModelosVIP();
-</script>
+  async function totalizador() {
+    const { data } = await _supabase.from('stats').select('total_visitas').eq('id', 1).single();
+    let novo = (data?.total_visitas || 0) + 1;
+    await _supabase.from('stats').update({ total_visitas: novo }).eq('id', 1);
+    document.getElementById('contador-global').innerText = novo.toString().padStart(6, '0');
+  }
 
+  carregarModelosVIP();
+  totalizador();
+</script>
 </body>
-</html>
+</html>s

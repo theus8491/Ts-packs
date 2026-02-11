@@ -1,167 +1,134 @@
 <!DOCTYPE html>
-<html lang="pt-BR" style="scroll-behavior:smooth">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TS Packs - Plataforma Premium</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-  <style>
-    body { font-family: 'Poppins', sans-serif; }
-    .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-    
-    .card-modelo {
-      background: linear-gradient(180deg, #121212 0%, #000 100%);
-      border: 1px solid #333;
-      border-radius: 20px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.3s ease;
-      height: 100%;
-    }
-    .card-modelo:hover { transform: translateY(-8px); border-color: #facc15; box-shadow: 0 10px 30px rgba(250, 204, 21, 0.1); }
-
-    .foto-box {
-      width: 100%;
-      height: 380px; 
-      object-fit: cover;
-      object-position: center top;
-      background-color: #1a1a1a;
-    }
-
-    .tag-rosa {
-      border: 1px solid #ff007f;
-      color: #ff007f;
-      font-size: 9px;
-      padding: 2px 8px;
-      border-radius: 20px;
-      background: rgba(255, 0, 127, 0.05);
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-
-    /* Estilo para a descrição/tabela */
-    .descricao-texto {
-      font-size: 13px;
-      color: #a3a3a3;
-      line-height: 1.5;
-      margin-top: 10px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3; /* Limita a 3 linhas para não ficar gigante */
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .btn-whats {
-      background: linear-gradient(90deg, #25d366 0%, #128c7e 100%);
-      color: white;
-      text-align: center;
-      padding: 14px;
-      font-weight: 800;
-      border-radius: 12px;
-      margin: 15px;
-      margin-top: auto;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: filter 0.2s;
-    }
-    .btn-whats:hover { filter: brightness(1.1); }
-  </style>
+    <meta charset="UTF-8">
+    <title>ADM TS PACKS - Sistema Integrado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background: #050505; color: white; font-family: 'Poppins', sans-serif; }
+        .aba-ativa { border-bottom: 3px solid #dc2626; color: white; }
+        .card { background: #111; border: 1px solid #222; border-radius: 15px; }
+    </style>
 </head>
+<body class="p-6">
 
-<body class="bg-neutral-950 text-white">
-
-<header class="fixed w-full z-50 bg-black/60 backdrop-blur-md border-b border-white/5">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-3xl font-extrabold tracking-tighter italic">
-      TS<span class="text-red-600">PACKS</span>
-    </h1>
-    <nav class="hidden md:flex gap-6 items-center text-[11px] font-bold uppercase tracking-widest">
-      <a href="#inicio" class="hover:text-red-600 transition">INÍCIO</a>
-      <a href="modelos.html" class="hover:text-red-600 transition">MODELOS</a>
-      <a href="cadastro.html" class="bg-red-600 px-4 py-2 rounded-full hover:bg-red-700 transition">QUERO ME CADASTRAR</a>
-    </nav>
-  </div>
-</header>
-
-<section id="inicio" class="relative min-h-[80vh] flex items-center justify-center">
-  <video autoplay muted loop playsinline class="hero-video">
-    <source src="cris.mp4" type="video/mp4">
-  </video>
-  <div class="absolute inset-0 bg-black/70"></div>
-  <div class="relative z-10 text-center max-w-3xl px-6">
-    <h2 class="text-6xl font-black mb-4 italic uppercase">TS <span class="text-red-600">MODELS</span></h2>
-    <p class="text-neutral-400 italic text-xl mb-8">Premium & Independente.</p>
-  </div>
-</section>
-
-<section id="vip" class="max-w-7xl mx-auto px-6 py-24">
-  <div class="flex flex-col items-center mb-16 text-center">
-    <span class="text-yellow-400 font-bold tracking-[0.3em] uppercase text-xs mb-2">Destaques da Semana</span>
-    <h3 class="text-4xl font-black italic uppercase">⭐ Modelos VIP</h3>
-    <div class="h-1 w-20 bg-yellow-400 mt-4 rounded-full"></div>
-  </div>
-  
-  <div id="vitrine" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      <p class="text-center col-span-full text-neutral-600 animate-pulse uppercase text-xs font-bold py-20">Sincronizando vitrine...</p>
-  </div>
-</section>
-
-<script>
-  const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
-
-  async function carregarModelosVIP() {
-    const vitrine = document.getElementById('vitrine');
-
-    const { data, error } = await _supabase
-      .from('modelos')
-      .select('*')
-      .eq('aprovado', true)
-      .eq('vip', true)
-      .order('created_at', { ascending: false });
-
-    if (error || !data || data.length === 0) {
-        vitrine.innerHTML = "<p class='col-span-full text-center text-neutral-600 uppercase text-xs font-bold py-20'>Nenhuma modelo VIP disponível.</p>";
-        return;
-    }
-
-    vitrine.innerHTML = data.map(m => {
-      const zapLimpo = m.whatsapp ? m.whatsapp.replace(/\D/g, '') : '';
-      
-      return `
-        <div class="card-modelo">
-          <div class="relative">
-            <img src="${m.foto_url}" class="foto-box" alt="${m.nome}" onerror="this.src='https://via.placeholder.com/400x600?text=Foto+Indisponivel'">
-            <div class="absolute bottom-4 left-4 flex gap-2">
-                <span class="tag-rosa">Verificada</span>
+    <div class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-black italic">TS<span class="text-red-600">ADM</span></h1>
+            <div class="flex gap-6">
+                <button onclick="mudarAba('modelos')" id="tab-m" class="aba-ativa font-bold uppercase text-xs py-2">Modelos</button>
+                <button onclick="mudarAba('chat')" id="tab-c" class="font-bold uppercase text-xs py-2 opacity-50">Suporte/Chat</button>
             </div>
-          </div>
-          
-          <div class="p-5 flex-1 flex flex-col">
-            <div class="flex justify-between items-start">
-                <h4 class="text-2xl font-black uppercase italic text-yellow-400">${m.nome}</h4>
-                <span class="text-[10px] font-bold text-neutral-500 bg-white/5 px-2 py-1 rounded">${m.idade || '18+'} ANOS</span>
-            </div>
-            
-            <p class="descricao-texto">
-                ${m.descricao || 'Disponível para conteúdos e encontros. Chame no WhatsApp para conferir minha tabela.'}
-            </p>
-
-            <a href="https://wa.me/55${zapLimpo}" target="_blank" class="btn-whats">
-                WhatsApp
-            </a>
-          </div>
         </div>
-      `;
-    }).join('');
-  }
 
-  carregarModelosVIP();
-</script>
+        <div id="secao-modelos" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <p class="text-neutral-500">Carregando modelos...</p>
+        </div>
 
+        <div id="secao-chat" class="hidden space-y-4">
+            <p class="text-neutral-500">Carregando mensagens...</p>
+        </div>
+    </div>
+
+    <script>
+        // Substitua pelas suas credenciais reais se estas não forem as suas
+        const SUPABASE_URL = 'https://ezcdhydjxielfhjqgblk.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW'; // Verifique se esta chave tem permissão de escrita
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        function mudarAba(aba) {
+            if(aba === 'modelos') {
+                document.getElementById('secao-modelos').classList.remove('hidden');
+                document.getElementById('secao-chat').classList.add('hidden');
+                document.getElementById('tab-m').classList.add('aba-ativa');
+                document.getElementById('tab-c').classList.remove('aba-ativa');
+                carregarModelos();
+            } else {
+                document.getElementById('secao-modelos').classList.add('hidden');
+                document.getElementById('secao-chat').classList.remove('hidden');
+                document.getElementById('tab-m').classList.remove('aba-ativa');
+                document.getElementById('tab-c').classList.add('aba-ativa');
+                carregarMensagens();
+            }
+        }
+
+        // --- FUNÇÕES DAS MODELOS ---
+        async function carregarModelos() {
+            const { data, error } = await _supabase.from('modelos').select('*').order('created_at', { ascending: false });
+            if(error) { console.error("Erro Modelos:", error); return; }
+            
+            const cont = document.getElementById('secao-modelos');
+            cont.innerHTML = data.map(m => `
+                <div class="card p-4">
+                    <img src="${m.foto_url}" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h3 class="font-bold uppercase text-sm">${m.nome}</h3>
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <button onclick="updateModelo('${m.id}', {aprovado: ${!m.aprovado}})" class="text-[9px] p-2 rounded ${m.aprovado ? 'bg-green-600' : 'bg-red-600'} font-bold">APROVADO: ${m.aprovado ? 'SIM' : 'NÃO'}</button>
+                        <button onclick="updateModelo('${m.id}', {vip: ${!m.vip}})" class="text-[9px] p-2 rounded ${m.vip ? 'bg-yellow-600 text-black' : 'bg-neutral-800'} font-bold">VIP: ${m.vip ? 'SIM' : 'NÃO'}</button>
+                        <button onclick="updateModelo('${m.id}', {online: ${!m.online}})" class="text-[9px] p-2 rounded ${m.online ? 'bg-blue-600' : 'bg-neutral-800'} font-bold">ONLINE: ${m.online ? 'SIM' : 'NÃO'}</button>
+                        <button onclick="deletarModelo('${m.id}')" class="text-[9px] p-2 rounded bg-neutral-900 border border-white/10 hover:bg-red-900">EXCLUIR</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function updateModelo(id, campos) {
+            await _supabase.from('modelos').update(campos).eq('id', id);
+            carregarModelos();
+        }
+
+        async function deletarModelo(id) {
+            if(confirm("Excluir modelo?")) {
+                await _supabase.from('modelos').delete().eq('id', id);
+                carregarModelos();
+            }
+        }
+
+        // --- FUNÇÕES DO CHAT ---
+        async function carregarMensagens() {
+            const { data, error } = await _supabase.from('mensagens_suporte').select('*').order('created_at', { ascending: false });
+            if(error) { console.error("Erro Chat:", error); return; }
+
+            const cont = document.getElementById('secao-chat');
+            cont.innerHTML = data.map(m => `
+                <div class="card p-6 flex flex-col md:flex-row gap-6">
+                    <div class="flex-1">
+                        <div class="flex gap-4 items-center mb-2">
+                            <span class="text-red-600 font-black text-xs uppercase">${m.cliente_nome}</span>
+                            <span class="text-[10px] text-neutral-600">${new Date(m.created_at).toLocaleString()}</span>
+                        </div>
+                        <p class="bg-black/50 p-3 rounded-lg border border-white/5 italic text-sm">"${m.mensagem}"</p>
+                        ${m.resposta ? `<p class="mt-2 text-xs text-green-500 font-bold">Respondido: <span class="text-neutral-400 font-normal">${m.resposta}</span></p>` : ''}
+                    </div>
+                    <div class="w-full md:w-64 flex flex-col gap-2">
+                        <textarea id="input-${m.id}" class="bg-black border border-white/10 p-2 rounded text-xs h-20 outline-none focus:border-red-600" placeholder="Responder..."></textarea>
+                        <button onclick="responder('${m.id}')" class="bg-red-600 text-[10px] font-bold py-2 rounded uppercase">Enviar Resposta</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function responder(id) {
+            const txt = document.getElementById(`input-${id}`).value;
+            if(!txt) return alert("Digite uma resposta");
+            
+            const { error } = await _supabase.from('mensagens_suporte')
+                .update({ resposta: txt, status: 'respondido' })
+                .eq('id', id);
+            
+            if(error) {
+                alert("Erro ao responder. Verifique o console.");
+                console.error(error);
+            } else {
+                alert("Resposta enviada!");
+                carregarMensagens();
+            }
+        }
+
+        // Inicializar
+        carregarModelos();
+    </script>
 </body>
 </html>

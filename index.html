@@ -3,152 +3,259 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TS Packs - Plataforma Premium</title>
+  <title>TS PACKS - Conteúdo Exclusivo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Poppins', sans-serif; }
+    body { font-family: 'Poppins', sans-serif; background-color: #0a0a0a; color: white; overflow-x: hidden; }
     .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-    .card-modelo { background: #121212; border: 1px solid #333; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; height: 100%; }
-    .card-modelo:hover { transform: translateY(-5px); border-color: #facc15; }
-    .foto-box { width: 100%; height: 350px; object-fit: cover; object-position: center top; background-color: #1a1a1a; }
+    .card-modelo { background: #121212; border: 1px solid #333; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; height: 100%; position: relative; }
+    .card-modelo:hover { border-color: #facc15; transform: translateY(-5px); }
+    .foto-box { width: 100%; height: 350px; object-fit: cover; object-position: center top; cursor: pointer; }
+    
+    .stats-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #1a1a1a; border-bottom: 1px solid #333; }
+    .stat-views { font-size: 12px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
+    .like-btn { cursor: pointer; transition: 0.2s; background: #ff0000; color: white; padding: 5px 12px; border-radius: 8px; font-weight: 800; font-size: 12px; display: flex; align-items: center; gap: 6px; box-shadow: 0 0 15px rgba(255,0,0,0.5); border: none; }
+    .like-btn.voted { background: #444; box-shadow: none; cursor: default; opacity: 0.7; }
+    
     .tag-rosa { border: 1px solid #ff007f; color: #ff007f; font-size: 10px; padding: 2px 10px; border-radius: 20px; background: rgba(255, 0, 127, 0.1); text-transform: uppercase; font-weight: bold; }
     .descricao-texto { font-size: 13px; color: #a3a3a3; line-height: 1.5; margin-top: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .btn-whats { background-color: #25d366; color: white; text-align: center; padding: 12px; font-weight: bold; border-radius: 10px; margin: 15px; margin-top: auto; text-transform: uppercase; transition: opacity 0.2s; }
-    .btn-whats:hover { opacity: 0.9; }
-    .stats-badge { background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); padding: 2px 8px; border-radius: 8px; font-size: 10px; color: #888; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 4px; }
+    .btn-whats { background-color: #25d366; color: white; text-align: center; padding: 12px; font-weight: 800; border-radius: 10px; margin: 15px; margin-top: auto; text-transform: uppercase; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    
+    .badge-vendas { background: #22c55e; color: white; font-size: 9px; font-weight: 900; padding: 4px 12px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; animation: pulse-vendas 2s infinite; display: inline-block; }
+    
+    @keyframes pulse-vendas { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
+    .timer-box { background: linear-gradient(90deg, #ff000022, transparent); border-left: 4px solid #ff0000; padding: 10px 20px; border-radius: 0 10px 10px 0; display: inline-block; }
+    
+    #chat-box { transition: all 0.3s ease; transform: translateY(10px); opacity: 0; pointer-events: none; z-index: 300; }
+    #chat-box.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
   </style>
 </head>
-<body class="bg-neutral-950 text-white">
+<body>
 
-<header class="fixed w-full z-50 bg-black/50 backdrop-blur border-b border-white/5">
-  <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-    <h1 class="text-3xl font-extrabold tracking-widest italic">TS<span class="text-red-600">PACKS</span></h1>
-    <nav class="flex gap-4 items-center text-[10px] md:text-sm font-semibold uppercase">
-      <a href="#inicio" class="text-red-600">INÍCIO</a>
-      <a href="modelos.html" class="hover:text-red-600 transition">MODELOS</a>
-      <a href="cadastro.html" class="border px-3 py-1 rounded">CADASTRE-SE</a>
-      <a href="login.html" class="hidden md:block border border-red-600 text-red-600 px-4 py-2 rounded hover:bg-red-600 hover:text-white transition">LOGIN ADM</a>
+<header class="fixed w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-black italic uppercase tracking-tighter">TS<span class="text-red-600">PACKS</span></h1>
+    <nav class="flex gap-4 md:gap-8 text-[10px] md:text-[11px] font-bold uppercase tracking-widest items-center">
+      <a href="#inicio" class="hover:text-red-600 transition hidden sm:block">Início</a>
+      <a href="modelos.html" class="hover:text-red-600 transition">Modelos</a>
+      <a href="cadastro.html" class="border border-red-600 text-red-600 px-3 py-1 rounded hover:bg-red-600 hover:text-white transition uppercase font-black">Cadastro</a>
+      <a href="login.html" class="bg-white/5 hover:bg-white/10 px-3 py-1 rounded transition text-neutral-400">ADM</a>
     </nav>
   </div>
 </header>
 
-<section id="inicio" class="relative min-h-screen flex items-center justify-center">
+<section id="inicio" class="relative min-h-screen flex items-center justify-center text-center">
   <video autoplay muted loop playsinline class="hero-video"><source src="cris.mp4" type="video/mp4"></video>
   <div class="absolute inset-0 bg-black/70"></div>
-  <div class="relative z-10 text-center max-w-3xl px-6">
-    <h2 class="text-5xl font-extrabold mb-6 italic uppercase leading-none">Seja uma <span class="text-red-600">TS Model</span></h2>
-    <p class="text-neutral-400 mb-8 italic text-lg">Plataforma premium para criadoras independentes.</p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="#vip" class="px-8 py-4 rounded-xl font-bold bg-yellow-400/20 text-yellow-400 border border-yellow-400/40 hover:bg-yellow-400 hover:text-black transition uppercase tracking-widest">VER MODELOS VIP</a>
-    </div>
+  <div class="relative z-10 px-6">
+    <h2 class="text-5xl md:text-8xl font-black mb-4 italic uppercase leading-none tracking-tighter">TS<span class="text-red-600">PACKS</span></h2>
+    <p class="text-neutral-400 mb-8 italic text-sm md:text-lg font-bold uppercase tracking-[0.5em]">Acesso Exclusivo • Melhores Conteúdos</p>
+    <a href="#ranking" class="bg-red-600 text-white px-10 py-4 rounded-xl font-black uppercase text-sm hover:bg-red-700 transition tracking-widest shadow-lg shadow-red-600/20">Acessar Vitrine</a>
   </div>
 </section>
 
-<section class="max-w-5xl mx-auto px-6 py-20 text-center">
-  <h3 class="text-4xl font-extrabold mb-6 italic uppercase leading-tight">Uma plataforma <span class="text-red-600">premium</span>, segura e independente</h3>
-  <p class="text-neutral-400 leading-relaxed text-lg italic">
-    A <strong class="text-white italic">TS Packs</strong> conecta criadoras verificadas a clientes reais, sem intermediários e com total transparência.
-  </p>
-</section>
-
-<section id="vip" class="max-w-7xl mx-auto px-6 pb-32">
-  <div class="flex flex-col items-center mb-16 text-center">
-    <h3 class="text-4xl font-bold italic uppercase text-yellow-400">⭐ Modelos VIP</h3>
-    <div class="h-1 w-24 bg-yellow-400 mt-2"></div>
-  </div>
-  <div id="vitrine" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
-</section>
-
-<footer class="border-t border-white/10 bg-black/60 backdrop-blur py-16">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="grid md:grid-cols-4 gap-12 mb-16">
-      <div class="col-span-2">
-        <h4 class="text-3xl font-extrabold tracking-widest italic mb-6">TS<span class="text-red-600">PACKS</span></h4>
-        <p class="text-neutral-500 text-sm leading-relaxed max-w-sm italic">
-          A maior vitrine de criadoras independentes do Brasil. Qualidade, segurança e exclusividade em um só lugar.
-        </p>
-        <div class="mt-8 flex flex-col items-start gap-2">
-            <span class="text-[9px] text-neutral-600 uppercase tracking-[0.3em]">Acessos Totais</span>
-            <div id="contador-global" class="text-xl font-mono font-bold text-red-600 bg-red-600/5 px-4 py-1 rounded-lg border border-red-600/20">000000</div>
+<section class="max-w-6xl mx-auto px-6 py-24 border-b border-white/5">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+        <div>
+            <span class="text-red-600 font-black uppercase text-[10px] tracking-[0.4em] mb-4 block">Nossa História</span>
+            <h3 class="text-4xl font-black italic uppercase mb-8 tracking-tighter">Do WhatsApp para o <span class="text-red-600">Topo</span></h3>
+            <p class="text-neutral-400 leading-relaxed mb-6 font-light">
+                A <strong>TS PACKS</strong> começou sua jornada como um pequeno grupo privado no WhatsApp em 2022. O que era um espaço restrito cresceu rapidamente devido à confiança e qualidade do material compartilhado.
+            </p>
+            <p class="text-neutral-400 leading-relaxed font-light">
+                Evoluímos para o modelo de franquia, expandindo nossa presença nacional. Agora, em <strong>2025/2026</strong>, consolidamos nossa autoridade com este site oficial, oferecendo uma experiência VIP completa e segura.
+            </p>
         </div>
-      </div>
-      
-      <div>
-        <h5 class="font-bold uppercase text-xs tracking-widest mb-6 text-white">Institucional</h5>
-        <ul class="space-y-4 text-sm text-neutral-500 font-medium">
-          <li><a href="privacidade.html" class="hover:text-red-600 transition">Privacidade</a></li>
-          <li><a href="termos.html" class="hover:text-red-600 transition">Termos de Uso</a></li>
-          <li><a href="anti-golpe.html" class="hover:text-red-600 transition">Guia Anti-Golpe</a></li>
-        </ul>
-      </div>
+        <div class="bg-neutral-900/40 p-10 rounded-3xl border border-white/5 backdrop-blur-sm relative">
+            <h4 class="text-xs font-black italic uppercase mb-6 text-red-600 tracking-[0.3em]">Nossa Identidade</h4>
+            <ul class="space-y-4 text-[10px] font-bold uppercase tracking-widest mb-8">
+                <li class="flex items-start gap-4 text-white"><div class="w-1.5 h-1.5 bg-red-600 rounded-full mt-1"></div> Modelos 100% Verificadas</li>
+                <li class="flex items-start gap-4 text-neutral-400"><div class="w-1.5 h-1.5 bg-red-600 rounded-full mt-1"></div> Pagamento via PIX direto à modelo</li>
+                <li class="flex items-start gap-4 text-neutral-400"><div class="w-1.5 h-1.5 bg-red-600 rounded-full mt-1"></div> Não recebemos pagamentos pelo site</li>
+                <li class="flex items-start gap-4 text-neutral-400"><div class="w-1.5 h-1.5 bg-red-600 rounded-full mt-1"></div> Fotos Autorais enviadas pelas modelos</li>
+                <li class="flex items-start gap-4 text-neutral-400"><div class="w-1.5 h-1.5 bg-red-600 rounded-full mt-1"></div> Sigilo Total: Não usamos seus dados</li>
+                <li class="flex items-start gap-4 text-neutral-400"><div class="w-1.5 h-1.5 bg-red-600 rounded-full mt-1"></div> Confiança e Credibilidade desde 2022</li>
+            </ul>
+            <div class="mt-8 pt-6 border-t border-white/10">
+                <p class="text-[9px] text-neutral-500 font-bold uppercase leading-relaxed tracking-widest">
+                    <span class="text-white">PLATAFORMA INDEPENDENTE:</span> Somos uma vitrine <span class="text-red-600">100% autônoma</span>. Operamos sob gestão própria.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
 
-      <div>
-        <h5 class="font-bold uppercase text-xs tracking-widest mb-6 text-white">Suporte</h5>
-        <ul class="space-y-4 text-sm text-neutral-500 font-medium">
-          <li><a href="contato.html" class="hover:text-red-600 transition">Contato</a></li>
-          <li><a href="cadastro.html" class="hover:text-red-600 transition">Cadastrar Perfil</a></li>
-          <li><span class="text-red-600 font-bold uppercase text-[10px]">Acesso +18 Anos</span></li>
-        </ul>
+<section id="ranking" class="max-w-7xl mx-auto px-6 py-20 text-center">
+  <div class="mb-12">
+      <h3 class="text-3xl font-black italic uppercase mb-4 tracking-tighter"><span class="text-red-600">RANKING</span> DA SEMANA</h3>
+      <div class="timer-box">
+          <p class="text-[9px] uppercase font-black tracking-[0.3em] text-neutral-500 mb-1">O Ranking Reseta em:</p>
+          <div id="countdown-timer" class="text-xl font-mono font-bold text-red-600 italic">...</div>
       </div>
-    </div>
-    
-    <div class="pt-8 border-t border-white/5 text-center">
-      <p class="text-[10px] text-neutral-600 uppercase tracking-widest font-bold">© 2026 TS Packs. Todos os direitos reservados.</p>
-    </div>
   </div>
+  <div id="vitrine-ranking" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"></div>
+</section>
+
+<section id="vip" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5 text-center">
+  <h3 class="text-2xl font-black italic uppercase mb-12 text-neutral-400 tracking-widest">MODELOS <span class="text-red-600">VIP</span></h3>
+  <div id="vitrine-vip" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-left"></div>
+  <div class="mt-16">
+      <a href="modelos.html" class="inline-block bg-white/5 border border-white/10 text-neutral-300 px-10 py-4 rounded-xl font-bold uppercase hover:bg-white hover:text-black transition tracking-widest text-xs">
+          Ver Todas as Modelos
+      </a>
+  </div>
+</section>
+
+<footer class="bg-neutral-900/50 border-t border-white/10 py-16 mt-20">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 items-center text-center md:text-left">
+        <div>
+            <h4 class="text-2xl font-black italic mb-4">TS<span class="text-red-600">PACKS</span></h4>
+            <p class="text-neutral-500 text-[10px] leading-relaxed uppercase font-bold tracking-tighter mb-4">
+                Sua vitrine oficial de conteúdo premium.<br>Transparência, sigilo e qualidade.
+            </p>
+        </div>
+        <div class="flex flex-col items-center">
+            <div id="contador-global" class="text-3xl font-mono font-bold text-red-600 bg-red-600/5 px-6 py-2 rounded-lg border border-red-600/20 mb-2">000000</div>
+            <p class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest">Visitas Reais</p>
+        </div>
+        <div class="text-[11px] text-neutral-500 font-bold space-y-3 uppercase tracking-widest">
+            <a href="termos.html" class="block hover:text-white transition">Termos de Uso</a>
+            <a href="privacidade.html" class="block hover:text-white transition">Privacidade</a>
+            <a href="anti-golpe.html" class="block text-red-600 font-black">Guia Anti-Golpe</a>
+            <a href="https://wa.me/5500000000000" target="_blank" class="block text-white font-black hover:text-red-600 transition">SUPORTE ESQUELETO 💀</a>
+        </div>
+    </div>
+    <div class="text-center mt-16 border-t border-white/5 pt-10 px-6">
+        <p class="text-[10px] text-neutral-700 font-black uppercase tracking-[0.5em]">© 2026 TS PACKS - TODOS OS DIREITOS RESERVADOS</p>
+    </div>
 </footer>
+
+<div id="chat-widget" class="fixed bottom-6 right-6 z-[100]">
+    <button onclick="toggleChat()" class="bg-red-600 w-12 h-12 rounded-full shadow-2xl flex items-center justify-center text-xl">💬</button>
+    <div id="chat-box" class="absolute bottom-16 right-0 w-72 bg-neutral-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+        <div class="bg-red-600 p-4 font-black text-[9px] uppercase tracking-widest text-white flex justify-between items-center">
+            <span>Suporte TS</span>
+            <button onclick="toggleChat()">✕</button>
+        </div>
+        <div id="chat-identificacao" class="p-6 text-center space-y-4">
+            <input id="chat-nome-input" type="text" placeholder="Seu nome..." class="bg-black border border-white/10 rounded-lg p-3 text-white w-full outline-none text-[10px]">
+            <button onclick="salvarNomeChat()" class="bg-red-600 w-full py-2 rounded-lg font-black text-[9px]">ENTRAR</button>
+        </div>
+        <div id="chat-container-main" class="hidden flex flex-col">
+            <div id="chat-content" class="h-64 p-4 overflow-y-auto text-[10px] space-y-3 flex flex-col bg-neutral-950/50"></div>
+            <div class="p-3 border-t border-white/5 bg-neutral-900 flex gap-2">
+                <input id="chat-input" type="text" placeholder="Sua dúvida..." class="bg-black border border-white/10 rounded-lg p-2 text-white flex-1 outline-none text-[10px]">
+                <button onclick="enviarDuvida()" class="bg-red-600 px-3 rounded-lg font-black text-[9px]">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
   const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
 
-  async function registrarAcao(id, coluna, valor) {
-    const d = {}; d[coluna] = (valor || 0) + 1;
-    await _supabase.from('modelos').update(d).eq('id', id);
+  async function gerenciarReset() {
+      const { data: config } = await _supabase.from('stats').select('ultimo_reset').eq('id', 1).single();
+      if (!config) return;
+      const agora = new Date().getTime();
+      const dataReset = new Date(config.ultimo_reset).getTime();
+      const tresDiasMs = 3 * 24 * 60 * 60 * 1000;
+      const restante = (dataReset + tresDiasMs) - agora;
+
+      if (restante <= 0) {
+          await _supabase.from('modelos').update({ likes: 0, views: 0 }).eq('aprovado', true);
+          await _supabase.from('stats').update({ ultimo_reset: new Date().toISOString() }).eq('id', 1);
+          localStorage.removeItem('ts_likes');
+          location.reload();
+      } else {
+          let h = Math.floor(restante / (1000 * 60 * 60));
+          let m = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
+          let s = Math.floor((restante % (1000 * 60)) / 1000);
+          document.getElementById('countdown-timer').innerText = `${h}h ${m}m ${s}s`;
+      }
   }
+
+  const criarCard = (m, isRank) => {
+      let jaCurtiu = JSON.parse(localStorage.getItem('ts_likes') || "[]").includes(m.id);
+      const zap = m.whatsapp ? m.whatsapp.replace(/\D/g, '') : '';
+      return `
+      <div class="card-modelo ${isRank ? 'border-red-600/30 shadow-lg shadow-red-600/5' : ''}">
+        <a href="https://wa.me/55${zap}" target="_blank" onclick="registrarView('${m.id}', ${m.views})">
+            <img src="${m.foto_url}" class="foto-box">
+        </a>
+        <div class="stats-bar">
+            <div class="stat-views">👁️ ${m.views || 0}</div>
+            <button onclick="curtir('${m.id}', ${m.likes})" class="like-btn ${jaCurtiu ? 'voted' : ''}"> ❤️ ${m.likes || 0} </button>
+        </div>
+        <div class="p-5 flex-1 flex flex-col">
+          <div class="h-6 mb-2">
+            ${m.online ? `<span class="badge-vendas">Disponível para Vendas</span>` : ''}
+          </div>
+          <h4 class="text-2xl font-black uppercase italic text-white leading-none tracking-tighter">${m.nome}</h4>
+          <div class="flex mt-3 mb-3"><span class="tag-rosa">Verificada TS</span></div>
+          <p class="descricao-texto mb-6 font-light">${m.descricao || ''}</p>
+          <a href="https://wa.me/55${zap}" target="_blank" class="btn-whats">SOLICITAR CONTEÚDO</a>
+        </div>
+      </div>`;
+  };
 
   async function carregarModelosVIP() {
-    const { data } = await _supabase.from('modelos').select('*').eq('aprovado', true).eq('vip', true).order('created_at', { ascending: false });
-    const vitrine = document.getElementById('vitrine');
-    if (!data) return;
-
-    vitrine.innerHTML = data.map(m => {
-      const zap = m.whatsapp.replace(/\D/g, '');
-      const v = m.views || 0;
-      const c = m.clicks || 0;
-      return `
-        <div class="card-modelo">
-          <div class="relative">
-             <div class="absolute top-3 right-3 flex gap-2">
-                <div class="stats-badge">👁️ ${v}</div>
-                <div class="stats-badge text-green-400">💬 ${c}</div>
-             </div>
-             <a href="https://wa.me/55${zap}" target="_blank" onclick="registrarAcao('${m.id}', 'views', ${v})">
-                <img src="${m.foto_url}" class="foto-box">
-             </a>
-          </div>
-          <div class="p-5 text-center flex-1 flex flex-col">
-            <h4 class="text-xl font-bold uppercase italic">${m.nome}</h4>
-            <p class="text-gray-500 text-[10px] mb-2 font-bold uppercase">${m.idade || '18+'} ANOS — VIP ⭐</p>
-            <div class="flex justify-center mb-2"><span class="tag-rosa">Verificada</span></div>
-            <p class="descricao-texto text-left">${m.descricao || 'Chame no WhatsApp para conferir minha tabela e conteúdos exclusivos.'}</p>
-            <a href="https://wa.me/55${zap}" target="_blank" onclick="registrarAcao('${m.id}', 'clicks', ${c})" class="btn-whats">WhatsApp</a>
-          </div>
-        </div>`;
-    }).join('');
+    const { data } = await _supabase.from('modelos').select('*').eq('aprovado', true).eq('vip', true).order('likes', { ascending: false });
+    if (data) {
+        document.getElementById('vitrine-ranking').innerHTML = data.slice(0, 3).map(m => criarCard(m, true)).join('');
+        document.getElementById('vitrine-vip').innerHTML = data.slice(3).map(m => criarCard(m, false)).join('');
+    }
   }
 
-  async function gerenciarVisitasGlobais() {
-    const display = document.getElementById('contador-global');
+  async function curtir(id, likes) {
+      let curtidas = JSON.parse(localStorage.getItem('ts_likes') || "[]");
+      if (curtidas.includes(id)) return;
+      await _supabase.from('modelos').update({ likes: likes + 1 }).eq('id', id);
+      curtidas.push(id); localStorage.setItem('ts_likes', JSON.stringify(curtidas));
+      carregarModelosVIP();
+  }
+
+  async function registrarView(id, views) { await _supabase.from('modelos').update({ views: views + 1 }).eq('id', id); }
+
+  async function gerenciarVisitas() {
     let { data: stats } = await _supabase.from('stats').select('total_visitas').eq('id', 1).single();
-    let novoTotal = (stats?.total_visitas || 0) + 1;
-    await _supabase.from('stats').update({ total_visitas: novoTotal }).eq('id', 1);
-    if (display) display.innerText = novoTotal.toString().padStart(6, '0');
+    let novo = (Number(stats?.total_visitas) || 0) + 1;
+    await _supabase.from('stats').update({ total_visitas: novo }).eq('id', 1);
+    document.getElementById('contador-global').innerText = novo.toString().padStart(6, '0');
   }
 
-  carregarModelosVIP();
-  gerenciarVisitasGlobais();
+  function toggleChat() { document.getElementById('chat-box').classList.toggle('active'); }
+  function salvarNomeChat() { 
+      const n = document.getElementById('chat-nome-input').value.trim(); if(n.length < 2) return; 
+      localStorage.setItem('chat_nome', n); location.reload(); 
+  }
+  async function carregarMensagens() {
+      const nome = localStorage.getItem('chat_nome');
+      const { data } = await _supabase.from('mensagens_suporte').select('*').eq('cliente_nome', nome).order('created_at', { ascending: true });
+      const cont = document.getElementById('chat-content');
+      cont.innerHTML = '';
+      if(data) data.forEach(m => {
+          cont.innerHTML += `<div class="bg-red-600/20 border border-red-600/30 p-2 rounded self-end max-w-[80%]">${m.mensagem}</div>`;
+          if(m.resposta) cont.innerHTML += `<div class="bg-neutral-800 p-2 rounded self-start max-w-[80%]"><b>TS:</b> ${m.resposta}</div>`;
+      });
+      cont.scrollTop = cont.scrollHeight;
+  }
+  async function enviarDuvida() {
+      const input = document.getElementById('chat-input'); const nome = localStorage.getItem('chat_nome');
+      if(!input.value.trim()) return;
+      await _supabase.from('mensagens_suporte').insert([{ cliente_nome: nome, mensagem: input.value.trim() }]);
+      input.value = ''; carregarMensagens();
+  }
+
+  carregarModelosVIP(); gerenciarVisitas(); 
+  setInterval(gerenciarReset, 1000);
+  if(localStorage.getItem('chat_nome')) {
+      document.getElementById('chat-identificacao').classList.add('hidden');
+      document.getElementById('chat-container-main').classList.remove('hidden');
+      carregarMensagens();
+  }
 </script>
 </body>
 </html>

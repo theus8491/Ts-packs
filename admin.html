@@ -2,107 +2,178 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Painel de Controle - TS Packs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TS PACKS - PAINEL SUPREMO</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Poppins', sans-serif; background-color: #0a0a0a; color: white; }
-    .card-adm { background: #121212; border: 1px solid #333; border-radius: 15px; padding: 15px; transition: 0.3s; }
-    .card-adm:hover { border-color: #555; }
-    .status-tag { font-size: 10px; padding: 2px 8px; border-radius: 5px; text-transform: uppercase; font-weight: bold; }
+    body { font-family: 'Poppins', sans-serif; background: #050505; color: white; }
+    .aba-btn { opacity: 0.4; transition: 0.3s; border-bottom: 3px solid transparent; cursor: pointer; }
+    .aba-btn.active { opacity: 1; border-color: #dc2626; color: white; }
+    .card-adm { background: #111; border: 1px solid #222; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; transition: 0.3s; }
+    .card-adm:hover { border-color: #444; }
+    .btn-online-ativo { background: #22c55e !important; color: white !important; box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
+    .chat-card { background: #0f0f0f; border-left: 4px solid #dc2626; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: #dc2626; border-radius: 10px; }
   </style>
 </head>
-<body class="p-6">
+<body class="p-4 md:p-10">
 
-  <div class="max-w-6xl mx-auto">
-    <div class="flex justify-between items-center mb-8 border-b border-neutral-800 pb-6">
-      <h1 class="text-2xl font-black italic uppercase text-red-600">TS <span class="text-white">ADMIN</span></h1>
-      <div class="flex gap-3">
-          <button onclick="carregarLista('novas')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-[10px] font-bold uppercase">Novas Solicitações</button>
-          <button onclick="carregarLista('aprovadas')" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-[10px] font-bold uppercase">Modelos Online</button>
+  <div class="max-w-7xl mx-auto">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-white/5 pb-6 gap-6">
+      <div>
+        <h1 class="text-3xl font-black italic uppercase tracking-tighter">TS <span class="text-red-600">ADMIN</span></h1>
+        <p class="text-[10px] text-neutral-500 font-bold uppercase tracking-widest">Controle Geral da Plataforma</p>
       </div>
-    </div>
 
-    <div id="lista-modelos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <p class="text-neutral-500">Selecione uma categoria acima...</p>
-    </div>
+      <nav class="flex gap-8">
+        <div onclick="mudarAba('modelos')" id="tab-modelos" class="aba-btn active font-black text-xs uppercase py-2">Modelos</div>
+        <div onclick="mudarAba('suporte')" id="tab-suporte" class="aba-btn font-black text-xs uppercase py-2">Suporte (Chat)</div>
+      </nav>
+
+      <div id="acoes-modelo" class="flex gap-2">
+        <button onclick="carregarModelos('novas')" class="bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-2 rounded text-[10px] font-bold uppercase">Solicitações</button>
+        <button onclick="carregarModelos('aprovadas')" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-[10px] font-bold uppercase">Publicadas</button>
+      </div>
+    </header>
+
+    <main id="secao-modelos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        </main>
+
+    <main id="secao-suporte" class="hidden max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-black italic uppercase">Mensagens Recentes</h2>
+            <button onclick="carregarChat()" class="text-[10px] bg-white/5 px-4 py-2 rounded border border-white/10">Sincronizar Chat</button>
+        </div>
+        <div id="lista-chat" class="space-y-4">
+            </div>
+    </main>
   </div>
 
   <script>
     const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
 
-    async function carregarLista(tipo) {
-      const container = document.getElementById('lista-modelos');
-      container.innerHTML = "<p class='animate-pulse'>Carregando...</p>";
-
-      let query = _supabase.from('modelos').select('*');
-
-      if (tipo === 'novas') {
-        query = query.eq('aprovado', false);
-      } else {
-        query = query.eq('aprovado', true);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
-
-      if (error || !data.length) {
-        container.innerHTML = "<p class='text-neutral-600 uppercase text-xs font-bold'>Nada encontrado aqui.</p>";
-        return;
-      }
-
-      container.innerHTML = data.map(m => `
-        <div class="card-adm">
-          <img src="${m.foto_url}" class="w-full h-48 object-cover rounded-lg mb-4 border border-neutral-800">
-          <div class="mb-4">
-            <h3 class="text-lg font-bold uppercase">${m.nome}</h3>
-            <p class="text-xs text-neutral-400 mb-2 italic">${m.descricao || 'Sem descrição'}</p>
-            <span class="status-tag ${m.vip ? 'bg-yellow-500 text-black' : 'bg-blue-500 text-white'}">
-              ${m.vip ? '⭐ VIP' : '🔵 NORMAL'}
-            </span>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <button onclick="updateStatus('${m.id}', true, true)" class="bg-yellow-600 hover:bg-yellow-700 text-[9px] font-bold p-2 rounded uppercase">
-              Aprovar/Mover VIP
-            </button>
-            
-            <button onclick="updateStatus('${m.id}', true, false)" class="bg-blue-600 hover:bg-blue-700 text-[9px] font-bold p-2 rounded uppercase">
-              Aprovar/Mover Normal
-            </button>
-
-            <button onclick="updateStatus('${m.id}', false, ${m.vip})" class="col-span-2 bg-neutral-800 hover:bg-red-900 text-[9px] font-bold p-2 rounded uppercase transition">
-              Remover do Site (Fica em Oculto)
-            </button>
-
-            <button onclick="deletarModelo('${m.id}')" class="col-span-2 text-[8px] text-neutral-600 mt-2 hover:text-red-500 uppercase tracking-widest">
-              Apagar permanentemente do banco
-            </button>
-          </div>
-        </div>
-      `).join('');
+    // MUDAR ABAS
+    function mudarAba(aba) {
+        if(aba === 'modelos') {
+            document.getElementById('secao-modelos').classList.remove('hidden');
+            document.getElementById('acoes-modelo').classList.remove('hidden');
+            document.getElementById('secao-suporte').classList.add('hidden');
+            document.getElementById('tab-modelos').classList.add('active');
+            document.getElementById('tab-suporte').classList.remove('active');
+            carregarModelos('novas');
+        } else {
+            document.getElementById('secao-modelos').classList.add('hidden');
+            document.getElementById('acoes-modelo').classList.add('hidden');
+            document.getElementById('secao-suporte').classList.remove('hidden');
+            document.getElementById('tab-modelos').classList.remove('active');
+            document.getElementById('tab-suporte').classList.add('active');
+            carregarChat();
+        }
     }
 
-    async function updateStatus(id, aprovado, vip) {
-      const { error } = await _supabase
-        .from('modelos')
-        .update({ aprovado: aprovado, vip: vip })
-        .eq('id', id);
+    // --- LOGICA DAS MODELOS ---
+    async function carregarModelos(filtro) {
+        const container = document.getElementById('secao-modelos');
+        container.innerHTML = "<p class='text-red-600 font-bold animate-pulse uppercase text-xs'>Acessando Banco...</p>";
 
-      if (error) alert("Erro ao atualizar!");
-      else location.reload();
+        let status = (filtro === 'novas') ? false : true;
+        const { data, error } = await _supabase.from('modelos').select('*').eq('aprovado', status).order('created_at', { ascending: false });
+
+        if(error || !data.length) {
+            container.innerHTML = "<p class='text-neutral-600 uppercase text-[10px] font-black'>Nenhum registro encontrado.</p>";
+            return;
+        }
+
+        container.innerHTML = data.map(m => `
+            <div class="card-adm">
+                <div class="relative mb-4">
+                    <img src="${m.foto_url}" class="w-full h-56 object-cover rounded-xl bg-neutral-900">
+                    <div class="absolute top-2 right-2 flex flex-col gap-1">
+                        ${m.vip ? '<span class="bg-yellow-500 text-black font-black text-[8px] px-2 py-1 rounded">VIP</span>' : '<span class="bg-blue-600 text-white font-black text-[8px] px-2 py-1 rounded">NORMAL</span>'}
+                    </div>
+                </div>
+                <h3 class="font-black uppercase text-sm mb-1">${m.nome}</h3>
+                <p class="text-[9px] text-neutral-500 font-bold mb-4 italic">${m.whatsapp}</p>
+                
+                <div class="space-y-2 mt-auto">
+                    <button onclick="atualizarStatus('${m.id}', {online: ${!m.online}}, '${filtro}')" class="w-full py-2 rounded-lg text-[9px] font-black uppercase transition-all ${m.online ? 'btn-online-ativo' : 'bg-neutral-800 text-neutral-500'}">
+                        ${m.online ? '● ONLINE NO SITE' : '○ FICAR ONLINE'}
+                    </button>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="atualizarStatus('${m.id}', {aprovado: true, vip: true}, '${filtro}')" class="bg-yellow-600/10 text-yellow-500 border border-yellow-600/30 text-[8px] font-bold p-2 rounded hover:bg-yellow-600 hover:text-black">SUBIR VIP</button>
+                        <button onclick="atualizarStatus('${m.id}', {aprovado: true, vip: false}, '${filtro}')" class="bg-blue-600/10 text-blue-500 border border-blue-600/30 text-[8px] font-bold p-2 rounded hover:bg-blue-600 hover:text-white">SUBIR NORMAL</button>
+                    </div>
+
+                    <button onclick="atualizarStatus('${m.id}', {aprovado: false}, '${filtro}')" class="w-full bg-neutral-900 text-neutral-600 text-[8px] font-bold py-2 rounded border border-white/5 hover:text-red-500">OCULTAR</button>
+                    <button onclick="deletarModelo('${m.id}', '${filtro}')" class="w-full text-[7px] text-neutral-800 font-black hover:text-red-600 pt-2 uppercase tracking-tighter">Apagar Registro</button>
+                </div>
+            </div>
+        `).join('');
     }
 
-    async function deletarModelo(id) {
-      if (confirm("Deseja apagar os dados e a foto para sempre?")) {
-        const { error } = await _supabase.from('modelos').delete().eq('id', id);
-        if (error) alert("Erro ao deletar!");
-        else location.reload();
-      }
+    async function atualizarStatus(id, campos, filtro) {
+        await _supabase.from('modelos').update(campos).eq('id', id);
+        carregarModelos(filtro);
     }
 
-    // Inicia carregando as novas solicitações
-    carregarLista('novas');
+    async function deletarModelo(id, filtro) {
+        if(confirm("DELETAR PERMANENTEMENTE?")) {
+            await _supabase.from('modelos').delete().eq('id', id);
+            carregarModelos(filtro);
+        }
+    }
+
+    // --- LOGICA DO CHAT ---
+    async function carregarChat() {
+        const list = document.getElementById('lista-chat');
+        list.innerHTML = "<p class='text-red-600 font-bold animate-pulse text-xs'>Sincronizando Mensagens...</p>";
+
+        const { data } = await _supabase.from('mensagens_suporte').select('*').order('created_at', { ascending: false });
+
+        if(!data || !data.length) {
+            list.innerHTML = "<p class='text-neutral-600 text-center py-10'>Sem mensagens no momento.</p>";
+            return;
+        }
+
+        list.innerHTML = data.map(m => `
+            <div class="chat-card">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-black text-red-600 text-xs uppercase">${m.cliente_nome}</span>
+                    <span class="text-[9px] text-neutral-700 font-bold">${new Date(m.created_at).toLocaleString()}</span>
+                </div>
+                <p class="text-sm text-neutral-300 italic mb-4">"${m.mensagem}"</p>
+                
+                ${m.resposta ? `
+                    <div class="mb-4 p-3 bg-red-600/5 border-l-2 border-red-600 text-xs">
+                        <b class="text-[9px] uppercase text-red-600 block mb-1">Sua Resposta:</b>
+                        ${m.resposta}
+                    </div>
+                ` : ''}
+
+                <div class="flex gap-2">
+                    <input id="resp-${m.id}" type="text" placeholder="Digite sua resposta..." class="flex-1 bg-black border border-white/10 rounded-lg px-4 text-xs text-white outline-none focus:border-red-600">
+                    <button onclick="enviarResposta('${m.id}')" class="bg-red-600 px-6 py-2 rounded-lg font-black text-[10px] uppercase">Enviar</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function enviarResposta(id) {
+        const input = document.getElementById(`resp-${id}`);
+        const msg = input.value.trim();
+        if(!msg) return;
+
+        await _supabase.from('mensagens_suporte').update({ resposta: msg, status: 'respondido' }).eq('id', id);
+        alert("Resposta enviada!");
+        carregarChat();
+    }
+
+    // INICIAR
+    carregarModelos('novas');
   </script>
 </body>
 </html>

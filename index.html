@@ -14,10 +14,11 @@
     .card-modelo:hover { border-color: #facc15; transform: translateY(-5px); }
     .foto-box { width: 100%; height: 350px; object-fit: cover; object-position: center top; cursor: pointer; }
     
-    /* BADGE ONLINE */
     .badge-online { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); backdrop-blur: md; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 6px; z-index: 10; border: 1px solid rgba(34, 197, 94, 0.3); }
     .ponto-verde { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+    .selo-vip-tag { position: absolute; top: 15px; right: 15px; background: linear-gradient(45deg, #facc15, #eab308); color: black; font-size: 10px; font-weight: 900; padding: 4px 10px; border-radius: 5px; z-index: 10; box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); }
 
     .stats-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #1a1a1a; border-bottom: 1px solid #333; }
     .stat-views { font-size: 12px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
@@ -28,25 +29,48 @@
     .descricao-texto { font-size: 13px; color: #a3a3a3; line-height: 1.5; margin-top: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .btn-whats { background-color: #25d366; color: white; text-align: center; padding: 12px; font-weight: 800; border-radius: 10px; margin-top: auto; text-transform: uppercase; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
     
-    .badge-vendas { background: #22c55e; color: white; font-size: 9px; font-weight: 900; padding: 4px 12px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; animation: pulse-vendas 2s infinite; display: inline-block; }
-    @keyframes pulse-vendas { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
     .timer-box { background: linear-gradient(90deg, #ff000022, transparent); border-left: 4px solid #ff0000; padding: 10px 20px; border-radius: 0 10px 10px 0; display: inline-block; }
+
+    /* CHAT */
+    #chat-container { position: fixed; bottom: 24px; right: 24px; z-index: 1000; }
+    #chat-button { width: 60px; height: 60px; background: #ff0000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(255,0,0,0.4); }
+    #chat-box { position: absolute; bottom: 80px; right: 0; width: 320px; height: 400px; background: #121212; border: 1px solid #333; border-radius: 20px; display: none; flex-direction: column; overflow: hidden; }
+    #chat-box.active { display: flex; }
     
-    #chat-box { transition: all 0.3s ease; transform: translateY(10px); opacity: 0; pointer-events: none; z-index: 300; }
-    #chat-box.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    .btn-grupo-fixo { position: fixed; bottom: 24px; left: 24px; z-index: 100; background: #25d366; color: white; padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 10px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); }
   </style>
 </head>
 <body>
 
+<a href="https://chat.whatsapp.com/JY8D67Io1wOBoTJV9Sopmj" target="_blank" class="btn-grupo-fixo">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="18" style="filter: brightness(0) invert(1);"> GRUPO OFICIAL
+</a>
+
+<div id="chat-container">
+    <div id="chat-box">
+        <div class="p-4 bg-neutral-900 border-b border-white/5 flex justify-between">
+            <span class="font-black italic text-xs uppercase">TS <span class="text-red-600">Comunidade</span></span>
+            <button onclick="toggleChat()">✕</button>
+        </div>
+        <div class="flex-1 p-4 overflow-y-auto text-[10px] space-y-2" id="chat-msgs">
+            <div class="text-neutral-500 italic">Chat aberto para membros...</div>
+        </div>
+        <div class="p-3 bg-black flex gap-2">
+            <input type="text" placeholder="Diga algo..." class="bg-neutral-900 border border-white/10 rounded px-2 py-1 text-xs w-full">
+        </div>
+    </div>
+    <div id="chat-button" onclick="toggleChat()">
+        <img src="https://cdn-icons-png.flaticon.com/512/134/134914.png" width="25" style="filter: brightness(0) invert(1);">
+    </div>
+</div>
+
 <header class="fixed w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <h1 class="text-2xl font-black italic uppercase tracking-tighter">TS<span class="text-red-600">PACKS</span></h1>
-    <nav class="flex gap-4 md:gap-8 text-[10px] md:text-[11px] font-bold uppercase tracking-widest items-center">
-      <a href="#inicio" class="hover:text-red-600 transition hidden sm:block">Início</a>
-      <a href="modelos.html" class="hover:text-red-600 transition">Modelos</a>
-      <a href="registrar.html" class="border border-red-600 text-red-600 px-3 py-1 rounded hover:bg-red-600 hover:text-white transition uppercase font-black">Cadastro</a>
-      <a href="login-modelo.html" class="bg-white/10 px-3 py-1 rounded transition text-white hover:bg-white/20">Login Modelo</a>
-      <a href="login.html" class="bg-white/5 hover:bg-white/10 px-3 py-1 rounded transition text-neutral-400">ADM</a>
+    <nav class="flex gap-4 text-[10px] font-bold uppercase items-center">
+      <a href="registrar.html" class="border border-red-600 text-red-600 px-3 py-1 rounded hover:bg-red-600 hover:text-white transition">Cadastro</a>
+      <a href="login-modelo.html" class="bg-white/10 px-3 py-1 rounded">Login Modelo</a>
+      <a href="login.html" class="text-neutral-500">ADM</a>
     </nav>
   </div>
 </header>
@@ -55,36 +79,31 @@
   <video autoplay muted loop playsinline class="hero-video"><source src="cris.mp4" type="video/mp4"></video>
   <div class="absolute inset-0 bg-black/70"></div>
   <div class="relative z-10 px-6">
-    <h2 class="text-5xl md:text-8xl font-black mb-4 italic uppercase leading-none tracking-tighter">TS<span class="text-red-600">PACKS</span></h2>
-    <p class="text-neutral-400 mb-8 italic text-sm md:text-lg font-bold uppercase tracking-[0.5em]">Acesso Exclusivo • Melhores Conteúdos</p>
-    <a href="#ranking" class="bg-red-600 text-white px-10 py-4 rounded-xl font-black uppercase text-sm hover:bg-red-700 transition tracking-widest shadow-lg shadow-red-600/20">Acessar Vitrine</a>
+    <h2 class="text-5xl md:text-8xl font-black mb-4 italic uppercase tracking-tighter">TS<span class="text-red-600">PACKS</span></h2>
+    <p class="text-neutral-400 mb-8 italic font-bold uppercase tracking-[0.4em]">Vitrine Independente • Sem Vínculos</p>
+    <a href="#ranking" class="bg-red-600 text-white px-10 py-4 rounded-xl font-black uppercase text-sm shadow-lg shadow-red-600/20">Acessar Vitrine</a>
   </div>
 </section>
 
 <section class="max-w-6xl mx-auto px-6 py-24 border-b border-white/5">
     <div class="grid md:grid-cols-2 gap-16 items-center">
         <div>
-            <span class="text-red-600 font-black uppercase text-[10px] tracking-[0.4em] mb-4 block">Nossa História</span>
-            <h3 class="text-4xl font-black italic uppercase mb-8 tracking-tighter">Do WhatsApp para o <span class="text-red-600">Topo</span></h3>
-            <p class="text-neutral-400 leading-relaxed mb-6 font-light">
-                A <strong>TS PACKS</strong> começou em 2022 como um grupo privado no WhatsApp. Hoje, em 2026, somos a maior vitrine de conteúdo autoral com sigilo absoluto.
-            </p>
-            <div class="space-y-4 border-l-2 border-red-600 pl-4">
-                <p class="text-[10px] text-neutral-500 uppercase font-bold leading-relaxed">
-                    A TS PACKS é uma plataforma independente. <span class="text-white">Não existe cobrança para clientes ou modelos comuns.</span>
-                </p>
-                <p class="text-[10px] text-red-500 uppercase font-black leading-relaxed italic">
-                    O único pagamento realizado na plataforma é a taxa de R$ 20,00, exclusiva para modelos que desejam o selo e o destaque na vitrine VIP.
-                </p>
+            <span class="text-red-600 font-black uppercase text-[10px] mb-4 block">Transparência & Jurídico</span>
+            <h3 class="text-4xl font-black italic uppercase mb-8">Termos de <span class="text-red-600">Independência</span></h3>
+            <div class="space-y-6">
+                <p class="text-neutral-400 text-sm font-light">A <strong>TS PACKS</strong> é uma vitrine tecnológica independente. Não somos agência e não possuímos vínculo empregatício com as modelos.</p>
+                <div class="border-l-2 border-red-600 pl-4">
+                    <h4 class="text-red-600 font-black uppercase text-sm mb-2 italic">Destaque VIP (R$ 20,00):</h4>
+                    <p class="text-neutral-400 text-sm font-light">O valor de <strong>R$ 20,00</strong> para destaque VIP é um investimento opcional. Este montante é integralmente utilizado para <strong>melhorias da plataforma</strong>, infraestrutura e tráfego pago.</p>
+                </div>
             </div>
         </div>
-        <div class="bg-neutral-900/40 p-10 rounded-3xl border border-white/5 backdrop-blur-sm relative">
-            <h4 class="text-xs font-black italic uppercase mb-6 text-red-600 tracking-[0.3em]">Nossa Identidade</h4>
+        <div class="bg-neutral-900/40 p-10 rounded-3xl border border-white/5">
+            <h4 class="text-xs font-black italic uppercase mb-6 text-red-600">Diretrizes</h4>
             <ul class="space-y-4 text-[10px] font-bold uppercase tracking-widest">
-                <li class="flex items-start gap-4 text-white"><span class="text-red-600">✔</span> Modelos 100% Verificadas</li>
-                <li class="flex items-start gap-4 text-neutral-400"><span class="text-red-600">✔</span> Pagamento apenas para Modelos VIP</li>
-                <li class="flex items-start gap-4 text-neutral-400"><span class="text-red-600">✔</span> Taxa única de manutenção: R$ 20,00</li>
-                <li class="flex items-start gap-4 text-neutral-400"><span class="text-red-600">✔</span> Sigilo Total e Confiança desde 2022</li>
+                <li class="flex items-start gap-4 text-white"><span>✔</span> Destaque VIP: R$ 20,00</li>
+                <li class="flex items-start gap-4 text-neutral-400"><span>✔</span> Reinvestimento em Sistema</li>
+                <li class="flex items-start gap-4 text-neutral-400"><span>✔</span> Plataforma Independente</li>
             </ul>
         </div>
     </div>
@@ -93,182 +112,77 @@
 <section id="ranking" class="max-w-7xl mx-auto px-6 py-20 text-center">
   <div class="mb-12">
       <h3 class="text-3xl font-black italic uppercase mb-4 tracking-tighter"><span class="text-red-600">RANKING</span> DA SEMANA</h3>
-      <div class="timer-box">
-          <p class="text-[9px] uppercase font-black tracking-[0.3em] text-neutral-500 mb-1">O Ranking Reseta em:</p>
-          <div id="countdown-timer" class="text-xl font-mono font-bold text-red-600 italic">...</div>
-      </div>
+      <div class="timer-box"><div id="countdown-timer" class="text-xl font-mono font-bold text-red-600 italic">...</div></div>
   </div>
   <div id="vitrine-ranking" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"></div>
 </section>
 
-<section id="vip" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5 text-center">
-  <h3 class="text-2xl font-black italic uppercase mb-12 text-neutral-400 tracking-widest">MODELOS <span class="text-red-600">VIP</span></h3>
-  <div id="vitrine-vip" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-left"></div>
-  <div class="mt-16 text-center">
-      <a href="modelos.html" class="inline-block bg-white/5 border border-white/10 text-neutral-300 px-10 py-4 rounded-xl font-bold uppercase hover:bg-white hover:text-black transition tracking-widest text-xs">
-          Ver Todas as Modelos
-      </a>
-  </div>
+<section id="vip" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5">
+  <h3 class="text-2xl font-black italic uppercase mb-12 text-center text-neutral-400">MODELOS <span class="text-red-600">VIP</span></h3>
+  <div id="vitrine-vip" class="grid sm:grid-cols-2 md:grid-cols-4 gap-6"></div>
 </section>
 
-<footer class="bg-neutral-900/50 border-t border-white/10 py-16 mt-20">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 items-center text-center md:text-left">
-        <div>
-            <h4 class="text-2xl font-black italic mb-4">TS<span class="text-red-600">PACKS</span></h4>
-            <p class="text-neutral-500 text-[10px] leading-relaxed uppercase font-bold tracking-tighter mb-4">
-                Sua vitrine oficial de conteúdo premium.<br>Transparência, sigilo e qualidade.
-            </p>
-        </div>
-        <div class="flex flex-col items-center">
-            <div id="contador-global" class="text-3xl font-mono font-bold text-red-600 bg-red-600/5 px-6 py-2 rounded-lg border border-red-600/20 mb-2">000000</div>
-            <p class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest">Visitas Reais</p>
-        </div>
-        <div class="text-[11px] text-neutral-500 font-bold space-y-3 uppercase tracking-widest">
-            <a href="termos.html" class="block hover:text-white transition">Termos de Uso</a>
-            <a href="privacidade.html" class="block hover:text-white transition">Privacidade</a>
-            <a href="anti-golpe.html" class="block text-red-600 font-black">Guia Anti-Golpe</a>
-            <a href="https://wa.me/5571984373174" target="_blank" class="block text-white font-black hover:text-red-600 transition">SUPORTE OFICIAL 💀</a>
-        </div>
-    </div>
-    <div class="text-center mt-16 border-t border-white/5 pt-10 px-6">
-        <p class="text-[10px] text-neutral-700 font-black uppercase tracking-[0.5em]">© 2026 TS PACKS - TODOS OS DIREITOS RESERVADOS</p>
-    </div>
-</footer>
-
-<div id="chat-widget" class="fixed bottom-6 right-6 z-[100]">
-    <button onclick="toggleChat()" class="bg-red-600 w-12 h-12 rounded-full shadow-2xl flex items-center justify-center text-xl">💬</button>
-    <div id="chat-box" class="absolute bottom-16 right-0 w-72 bg-neutral-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-        <div class="bg-red-600 p-4 font-black text-[9px] uppercase tracking-widest text-white flex justify-between items-center">
-            <span>Suporte TS</span>
-            <button onclick="toggleChat()">✕</button>
-        </div>
-        <div id="chat-identificacao" class="p-6 text-center space-y-4">
-            <input id="chat-nome-input" type="text" placeholder="Seu nome..." class="bg-black border border-white/10 rounded-lg p-3 text-white w-full outline-none text-[10px]">
-            <button onclick="salvarNomeChat()" class="bg-red-600 w-full py-2 rounded-lg font-black text-[9px]">ENTRAR</button>
-        </div>
-        <div id="chat-container-main" class="hidden flex flex-col">
-            <div id="chat-content" class="h-64 p-4 overflow-y-auto text-[10px] space-y-3 flex flex-col bg-neutral-950/50"></div>
-            <div class="p-3 border-t border-white/5 bg-neutral-900 flex gap-2">
-                <input id="chat-input" type="text" placeholder="Sua dúvida..." class="bg-black border border-white/10 rounded-lg p-2 text-white flex-1 outline-none text-[10px]">
-                <button onclick="enviarDuvida()" class="bg-red-600 px-3 rounded-lg font-black text-[9px]">OK</button>
+<footer class="bg-neutral-900/80 border-t border-white/10 pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-3 gap-12 mb-16">
+            <div>
+                <h4 class="text-2xl font-black italic mb-4 uppercase">TS<span class="text-red-600">PACKS</span></h4>
+                <p class="text-neutral-500 text-[10px] font-bold uppercase italic">© 2026 TS PACKS. Todos os direitos reservados. Vitrine independente sem vínculo laboral.</p>
+            </div>
+            <div class="text-center">
+                <div id="contador-global" class="text-3xl font-mono font-bold text-red-600 mb-2">000000</div>
+                <p class="text-[9px] text-neutral-600 uppercase font-black">Visitas Reais</p>
+            </div>
+            <div class="flex flex-col gap-3 text-[10px] font-black uppercase text-neutral-500 md:items-end">
+                <a href="anti-golpe.html" class="text-red-600">Guia Anti-Golpe</a>
+                <a href="https://wa.me/5571984373174" target="_blank" class="text-white hover:text-red-600 transition">SUPORTE OFICIAL</a>
             </div>
         </div>
     </div>
-</div>
+</footer>
 
 <script>
   const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
 
+  function toggleChat() { document.getElementById('chat-box').classList.toggle('active'); }
+
   async function carregarModelos() {
     const { data } = await _supabase.from('modelos').select('*').eq('aprovado', true).order('likes', { ascending: false });
     if (data) {
-        const ranking = data.slice(0, 3);
-        document.getElementById('vitrine-ranking').innerHTML = ranking.map(m => criarCard(m, true)).join('');
-        const vipsRestantes = data.filter(m => m.vip === true && !ranking.some(r => r.id === m.id));
-        document.getElementById('vitrine-vip').innerHTML = vipsRestantes.map(m => criarCard(m, false)).join('');
+        document.getElementById('vitrine-ranking').innerHTML = data.filter(m => m.likes > 0).slice(0, 3).map((m, i) => criarCard(m, true, i+1)).join('');
+        document.getElementById('vitrine-vip').innerHTML = data.filter(m => m.vip).map(m => criarCard(m, false)).join('');
     }
   }
 
-  const criarCard = (m, isRank) => {
-      let jaCurtiu = JSON.parse(localStorage.getItem('ts_likes') || "[]").includes(m.id);
-      const linkWhats = `https://wa.me/55${m.whatsapp?.replace(/\D/g, '')}`;
-      return `
-      <div class="card-modelo ${isRank ? 'border-red-600/30 shadow-lg shadow-red-600/5' : ''}">
-        <div class="badge-online">
-            <div class="ponto-verde"></div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-white">Online Agora</span>
-        </div>
-        <div onclick="registrarView('${m.id}', ${m.views || 0}, '${linkWhats}')" class="cursor-pointer">
-            <img src="${m.foto_url}" class="foto-box">
-        </div>
-        <div class="stats-bar">
-            <div class="stat-views">👁️ ${m.views || 0}</div>
-            <button onclick="curtir('${m.id}', ${m.likes || 0})" class="like-btn ${jaCurtiu ? 'voted' : ''}"> ❤️ ${m.likes || 0} </button>
-        </div>
+  const criarCard = (m, isRank, pos) => {
+    const link = `https://wa.me/55${m.whatsapp?.replace(/\D/g, '')}`;
+    return `<div class="card-modelo">
+        <div class="badge-online"><div class="ponto-verde"></div><span class="text-[8px] font-black uppercase">Online</span></div>
+        <img src="${m.foto_url}" class="foto-box" onclick="registrarView('${m.id}', ${m.views}, '${link}')">
+        <div class="stats-bar"><span class="stat-views">👁️ ${m.views || 0}</span> <button class="like-btn">❤️ ${m.likes || 0}</button></div>
         <div class="p-5 flex-1 flex flex-col">
-          <div class="h-6 mb-2">${m.vip ? `<span class="badge-vendas">Disponível para Vendas</span>` : ''}</div>
-          <h4 class="text-2xl font-black uppercase italic text-white leading-none tracking-tighter">${m.nome}</h4>
-          <div class="flex mt-3 mb-3"><span class="tag-rosa">Verificada TS</span></div>
-          <p class="descricao-texto mb-6 font-light">${m.descricao || ''}</p>
-          <button onclick="registrarView('${m.id}', ${m.views || 0}, '${linkWhats}')" class="btn-whats">SOLICITAR CONTEÚDO</button>
+            <h4 class="text-xl font-black italic uppercase">${m.nome}</h4>
+            <div class="tag-rosa mt-2">Verificada TS</div>
+            <p class="descricao-texto my-4">${m.descricao || ''}</p>
+            <button onclick="registrarView('${m.id}', ${m.views}, '${link}')" class="btn-whats">SOLICITAR CONTEÚDO</button>
         </div>
-      </div>`;
+    </div>`;
   };
 
-  async function curtir(id, likes) {
-      let curtidas = JSON.parse(localStorage.getItem('ts_likes') || "[]");
-      if (curtidas.includes(id)) return;
-      await _supabase.from('modelos').update({ likes: (Number(likes) || 0) + 1 }).eq('id', id);
-      curtidas.push(id); localStorage.setItem('ts_likes', JSON.stringify(curtidas));
-      carregarModelos();
-  }
-
-  async function registrarView(id, views, link) { 
-      await _supabase.from('modelos').update({ views: (Number(views) || 0) + 1 }).eq('id', id); 
-      window.open(link, '_blank');
+  async function registrarView(id, v, link) { 
+      await _supabase.from('modelos').update({ views: v + 1 }).eq('id', id); 
+      window.open(link, '_blank'); 
       carregarModelos();
   }
 
   async function gerenciarVisitas() {
     let { data: stats } = await _supabase.from('stats').select('total_visitas').eq('id', 1).single();
-    let novo = (Number(stats?.total_visitas) || 0) + 1;
+    let novo = (stats?.total_visitas || 0) + 1;
     await _supabase.from('stats').update({ total_visitas: novo }).eq('id', 1);
     document.getElementById('contador-global').innerText = novo.toString().padStart(6, '0');
   }
 
-  async function gerenciarReset() {
-      const { data: config } = await _supabase.from('stats').select('ultimo_reset').eq('id', 1).single();
-      if (!config) return;
-      const agora = new Date().getTime();
-      const dataReset = new Date(config.ultimo_reset).getTime();
-      const tresDiasMs = 3 * 24 * 60 * 60 * 1000;
-      const restante = (dataReset + tresDiasMs) - agora;
-      if (restante <= 0) {
-          await _supabase.from('modelos').update({ likes: 0, views: 0 }).eq('aprovado', true);
-          await _supabase.from('stats').update({ ultimo_reset: new Date().toISOString() }).eq('id', 1);
-          location.reload();
-      } else {
-          let h = Math.floor(restante / (1000 * 60 * 60));
-          let m = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
-          let s = Math.floor((restante % (1000 * 60)) / 1000);
-          document.getElementById('countdown-timer').innerText = `${h}h ${m}m ${s}s`;
-      }
-  }
-
-  function toggleChat() { document.getElementById('chat-box').classList.toggle('active'); }
-  function salvarNomeChat() { 
-      const n = document.getElementById('chat-nome-input').value.trim(); if(n.length < 2) return; 
-      localStorage.setItem('chat_nome', n); 
-      document.getElementById('chat-identificacao').classList.add('hidden');
-      document.getElementById('chat-container-main').classList.remove('hidden');
-      carregarMensagens();
-  }
-  async function carregarMensagens() {
-      const nome = localStorage.getItem('chat_nome');
-      const { data } = await _supabase.from('mensagens_suporte').select('*').eq('cliente_nome', nome).order('created_at', { ascending: true });
-      const cont = document.getElementById('chat-content');
-      cont.innerHTML = '';
-      if(data) data.forEach(m => {
-          cont.innerHTML += `<div class="bg-red-600/20 border border-red-600/30 p-2 rounded self-end max-w-[80%]">${m.mensagem}</div>`;
-          if(m.resposta) cont.innerHTML += `<div class="bg-neutral-800 p-2 rounded self-start max-w-[80%]"><b>TS:</b> ${m.resposta}</div>`;
-      });
-      cont.scrollTop = cont.scrollHeight;
-  }
-  async function enviarDuvida() {
-      const input = document.getElementById('chat-input'); const nome = localStorage.getItem('chat_nome');
-      if(!input.value.trim()) return;
-      await _supabase.from('mensagens_suporte').insert([{ cliente_nome: nome, mensagem: input.value.trim() }]);
-      input.value = ''; carregarMensagens();
-  }
-
-  carregarModelos(); 
-  gerenciarVisitas(); 
-  setInterval(gerenciarReset, 1000);
-  if(localStorage.getItem('chat_nome')) {
-      document.getElementById('chat-identificacao').classList.add('hidden');
-      document.getElementById('chat-container-main').classList.remove('hidden');
-      carregarMensagens();
-  }
+  carregarModelos(); gerenciarVisitas();
 </script>
 </body>
 </html>

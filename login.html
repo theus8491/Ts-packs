@@ -7,71 +7,131 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body { background-color: #0a0a0a; font-family: 'Poppins', sans-serif; }
+    .glass-card { background: rgba(18, 18, 18, 0.8); backdrop-blur: 10px; border: 1px solid rgba(255, 255, 255, 0.05); }
+    input::placeholder { color: #525252; }
+  </style>
 </head>
-<body class="bg-neutral-950 text-white font-[Poppins] flex items-center justify-center min-h-screen p-6">
+<body class="text-white flex items-center justify-center min-h-screen p-6">
 
-  <div class="w-full max-w-sm bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-2xl">
-    <h1 class="text-2xl font-black italic text-center mb-6 uppercase tracking-widest">
-      TS<span class="text-red-600">PACKS</span> <span class="text-sm block text-neutral-500 not-italic">Painel Administrativo</span>
-    </h1>
+  <div class="w-full max-w-sm glass-card p-8 rounded-2xl shadow-2xl">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-black italic uppercase tracking-tighter">
+        TS<span class="text-red-600">PACKS</span>
+      </h1>
+      <p class="text-[10px] uppercase font-bold tracking-[0.3em] text-neutral-500 mt-2">Área Administrativa</p>
+    </div>
     
-    <div class="space-y-4">
+    <div class="space-y-5">
       <div>
-        <label class="text-[10px] uppercase font-bold text-neutral-500 ml-1">E-mail</label>
-        <input id="email" type="email" placeholder="admin@tspacks.com" class="w-full bg-black border border-neutral-700 p-3 rounded-lg focus:border-red-600 outline-none transition">
+        <label class="text-[9px] uppercase font-black text-neutral-400 ml-1 tracking-widest">E-mail de Acesso</label>
+        <input id="email" type="email" placeholder="seu@email.com" 
+          class="w-full bg-black/50 border border-neutral-800 p-4 rounded-xl focus:border-red-600 outline-none transition text-sm mt-1">
       </div>
+      
       <div>
-        <label class="text-[10px] uppercase font-bold text-neutral-500 ml-1">Senha</label>
-        <input id="senha" type="password" placeholder="••••••••" class="w-full bg-black border border-neutral-700 p-3 rounded-lg focus:border-red-600 outline-none transition">
+        <label class="text-[9px] uppercase font-black text-neutral-400 ml-1 tracking-widest">Senha Mestra</label>
+        <input id="senha" type="password" placeholder="••••••••" 
+          class="w-full bg-black/50 border border-neutral-800 p-4 rounded-xl focus:border-red-600 outline-none transition text-sm mt-1">
       </div>
-      <button onclick="logar()" id="btnLogin" class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-lg font-bold uppercase tracking-widest transition shadow-lg shadow-red-900/20">
+
+      <button onclick="logar()" id="btnLogin" 
+        class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-black uppercase text-xs tracking-[0.2em] transition-all active:scale-95 shadow-lg shadow-red-900/20">
         Entrar no Painel
       </button>
     </div>
-    <p id="erro" class="text-red-500 text-[10px] mt-4 text-center uppercase font-bold tracking-tighter"></p>
+
+    <div id="erro-container" class="hidden mt-6 p-4 bg-red-600/10 border border-red-600/20 rounded-xl">
+        <p id="erro" class="text-red-500 text-[10px] text-center uppercase font-black tracking-tighter leading-tight"></p>
+    </div>
+
+    <div class="mt-8 text-center">
+        <a href="index.html" class="text-[9px] uppercase font-bold text-neutral-600 hover:text-white transition tracking-widest">← Voltar para o Site</a>
+    </div>
   </div>
 
   <script>
-    // Configuração com a sua URL e Key Anon
+    // Configuração Supabase
     const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
 
     async function logar() {
       const email = document.getElementById('email').value.trim();
       const senha = document.getElementById('senha').value;
       const btn = document.getElementById('btnLogin');
+      const erroCont = document.getElementById('erro-container');
       const erroMsg = document.getElementById('erro');
 
       if(!email || !senha) {
-          erroMsg.innerText = "Preencha todos os campos.";
+          exibirErro("Campos obrigatórios vazios.");
           return;
       }
 
+      // Feedback visual de carregamento
       btn.disabled = true;
-      btn.innerText = "VERIFICANDO...";
-      erroMsg.innerText = "";
+      btn.innerText = "VERIFICANDO CREDENCIAIS...";
+      erroCont.classList.add('hidden');
 
       try {
-        const { data, error } = await _supabase.auth.signInWithPassword({ 
+        // 1. Autenticação no Supabase Auth
+        const { data: authData, error: authError } = await _supabase.auth.signInWithPassword({ 
             email: email, 
             password: senha 
         });
 
-        if (error) throw error;
+        if (authError) throw authError;
 
-        // Sucesso: Redireciona para o admin
-        window.location.href = "admin.html";
+        // 2. Verificação de permissão na tabela 'admins'
+        const { data: adminCheck, error: dbError } = await _supabase
+            .from('admins')
+            .select('email')
+            .eq('email', email.toLowerCase())
+            .maybeSingle();
+
+        if (adminCheck) {
+            // LOGIN SUCESSO: Redireciona para o painel
+            btn.classList.replace('bg-red-600', 'bg-green-600');
+            btn.innerText = "ACESSO LIBERADO!";
+            
+            setTimeout(() => {
+                window.location.href = "admin.html";
+            }, 800);
+        } else {
+            // LOGIN NEGADO: Não está na tabela de admins
+            await _supabase.auth.signOut();
+            throw new Error("Seu perfil não possui nível de Administrador.");
+        }
 
       } catch (error) {
-        erroMsg.innerText = "ACESSO NEGADO: " + error.message;
+        let msgFinal = "Erro desconhecido.";
+        
+        // Tradução de erros comuns do Supabase
+        if(error.message.includes("Invalid login credentials")) {
+            msgFinal = "E-mail ou senha incorretos.";
+        } else if(error.message.includes("perfil não possui nível")) {
+            msgFinal = error.message;
+        } else if(error.message.includes("Email not confirmed")) {
+            msgFinal = "E-mail ainda não confirmado.";
+        }
+
+        exibirErro(msgFinal);
         btn.disabled = false;
-        btn.innerText = "Entrar no Painel";
+        btn.innerText = "Tentar Novamente";
       }
     }
 
-    // Permite dar 'Enter' para logar
-    document.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') logar();
+    function exibirErro(texto) {
+        const erroCont = document.getElementById('erro-container');
+        const erroMsg = document.getElementById('erro');
+        erroMsg.innerText = texto;
+        erroCont.classList.remove('hidden');
+    }
+
+    // Atalho tecla Enter
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') logar();
     });
   </script>
+
 </body>
 </html>

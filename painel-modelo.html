@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Painel • TS PACKS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: #050505; color: white; }
+    .glass { background: #111; border: 1px solid #222; border-radius: 24px; }
+    .input-ts { background: #000; border: 1px solid #333; padding: 14px; border-radius: 12px; width: 100%; color: white; outline: none; transition: 0.3s; font-size: 14px; }
+    .input-ts:focus { border-color: #dc2626; }
+    /* Estilo para a barra de rolagem da descrição */
+    textarea.input-ts::-webkit-scrollbar { width: 5px; }
+    textarea.input-ts::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+  </style>
+</head>
+<body class="min-h-screen p-4 pb-12">
+
+  <div class="max-w-md mx-auto">
+    
+    <div class="flex justify-between items-center py-6">
+        <h1 class="text-xl font-black italic uppercase tracking-tighter">TS <span class="text-red-600">PAINEL</span></h1>
+        <button onclick="deslogar()" class="text-[10px] font-black uppercase bg-white/5 px-4 py-2 rounded-full hover:bg-red-600 transition">Sair</button>
+    </div>
+
+    <div class="glass p-6 space-y-6 shadow-2xl">
+        
+        <div class="relative w-32 h-32 mx-auto">
+            <img id="img-preview" src="https://via.placeholder.com/150" class="w-full h-full object-cover rounded-2xl border-2 border-red-600/20 bg-neutral-900">
+            <label for="foto-input" class="absolute -bottom-2 -right-2 bg-red-600 p-2 rounded-xl cursor-pointer shadow-lg hover:scale-110 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+            </label>
+            <input type="file" id="foto-input" class="hidden" accept="image/*">
+        </div>
+
+        <div id="status-tag" class="text-center text-[10px] font-black uppercase tracking-widest p-2 rounded-lg bg-white/5 text-neutral-500">
+            Carregando status...
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] uppercase font-black text-neutral-500 ml-1 italic">Nome Artístico</label>
+                <input id="nome" type="text" class="input-ts" placeholder="Seu nome">
+            </div>
+
+            <div>
+                <label class="text-[10px] uppercase font-black text-neutral-500 ml-1 italic">WhatsApp (Com DDD)</label>
+                <input id="zap" type="text" class="input-ts" placeholder="Ex: 71988887777">
+            </div>
+
+            <div>
+                <label class="text-[10px] uppercase font-black text-neutral-500 ml-1 italic">Descrição / Tabela de Preços</label>
+                <textarea id="desc" class="input-ts h-32 resize-none" placeholder="Conte mais sobre você ou seus pacotes..."></textarea>
+            </div>
+
+            <div>
+                <label class="text-[10px] uppercase font-black text-neutral-500 ml-1 italic">Link da Foto (Opcional)</label>
+                <input id="foto_url_texto" type="text" class="input-ts" placeholder="Ou cole o link da imagem aqui">
+            </div>
+
+            <button onclick="salvar()" id="btn-salvar" class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-lg shadow-red-900/20">Salvar Alterações</button>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
+    
+    let userLogadoId = null;
+
+    window.onload = async () => {
+        const { data: { user } } = await _supabase.auth.getUser();
+        if (!user) {
+            location.href = "login-modelo.html"; 
+            return;
+        }
+        userLogadoId = user.id;
+        buscarPerfil();
+    };
+
+    async function buscarPerfil() {
+        const { data, error } = await _supabase
+            .from('modelos')
+            .select('*')
+            .eq('id', userLogadoId) 
+            .single();
+
+        if (data) {
+            document.getElementById('nome').value = data.nome || '';
+            document.getElementById('zap').value = data.whatsapp || '';
+            document.getElementById('desc').value = data.descricao || ''; // Carrega a descrição
+            document.getElementById('img-preview').src = data.foto_url || 'https://via.placeholder.com/150';
+            document.getElementById('foto_url_texto').value = data.foto_url || '';
+
+            const tag = document.getElementById('status-tag');
+            if (data.vip) {
+                tag.innerText = "⭐ Modelo VIP";
+                tag.className = "text-center text-[10px] font-black uppercase tracking-widest p-2 rounded-lg bg-yellow-500/10 text-yellow-500 border border-yellow-500/20";
+            } else {
+                tag.innerText = "✅ Perfil Ativo";
+                tag.className = "text-center text-[10px] font-black uppercase tracking-widest p-2 rounded-lg bg-green-500/10 text-green-500 border border-green-500/20";
+            }
+        }
+    }
+
+    document.getElementById('foto-input').onchange = evt => {
+        const [file] = evt.target.files;
+        if (file) { document.getElementById('img-preview').src = URL.createObjectURL(file); }
+    }
+
+    async function salvar() {
+        const btn = document.getElementById('btn-salvar');
+        const file = document.getElementById('foto-input').files[0];
+        let urlFinal = document.getElementById('foto_url_texto').value;
+        
+        btn.innerText = "SALVANDO...";
+        btn.disabled = true;
+
+        try {
+            if (file) {
+                const fileName = `${Date.now()}_${file.name}`;
+                const { data: uploadData, error: uploadError } = await _supabase.storage
+                    .from('fotos-modelos')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data: { publicUrl } } = _supabase.storage
+                    .from('fotos-modelos')
+                    .getPublicUrl(fileName);
+                
+                urlFinal = publicUrl;
+            }
+
+            // ATUALIZAÇÃO NO BANCO (Incluindo Descrição)
+            const { error } = await _supabase
+                .from('modelos')
+                .update({
+                    nome: document.getElementById('nome').value,
+                    whatsapp: document.getElementById('zap').value,
+                    descricao: document.getElementById('desc').value, // Salva a descrição
+                    foto_url: urlFinal
+                })
+                .eq('id', userLogadoId);
+
+            if (error) throw error;
+
+            alert("Perfil atualizado com sucesso!");
+            location.reload();
+
+        } catch (e) {
+            alert("Erro ao salvar: " + e.message);
+        } finally {
+            btn.innerText = "Salvar Alterações";
+            btn.disabled = false;
+        }
+    }
+
+    async function deslogar() {
+        await _supabase.auth.signOut();
+        location.href = "login-modelo.html";
+    }
+  </script>
+</body>
+</html>

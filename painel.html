@@ -2,109 +2,173 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>ADM TS PACKS - Sistema Integrado</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TS ADM • Painel Supremo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { background: #050505; color: white; font-family: 'Poppins', sans-serif; }
-        .aba-ativa { border-bottom: 3px solid #dc2626; color: white; }
-        .card { background: #111; border: 1px solid #222; border-radius: 15px; }
+        .aba-btn { opacity: 0.4; transition: 0.3s; border-bottom: 3px solid transparent; cursor: pointer; }
+        .aba-btn.active { opacity: 1; border-color: #dc2626; color: white; }
+        .card { background: #111; border: 1px solid #222; border-radius: 20px; transition: 0.3s; overflow: hidden; }
+        .card:hover { border-color: #444; transform: translateY(-2px); }
+        .input-resp { background: #000; border: 1px solid #333; transition: 0.3s; }
+        .input-resp:focus { border-color: #dc2626; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #dc2626; border-radius: 10px; }
     </style>
 </head>
-<body class="p-6">
+<body class="p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-2xl font-black italic">TS<span class="text-red-600">ADM</span></h1>
-            <div class="flex gap-6">
-                <button onclick="mudarAba('modelos')" id="tab-m" class="aba-ativa font-bold uppercase text-xs py-2">Modelos</button>
-                <button onclick="mudarAba('chat')" id="tab-c" class="font-bold uppercase text-xs py-2 opacity-50">Suporte/Chat</button>
+    <div class="max-w-7xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 border-b border-white/5 pb-8">
+            <div>
+                <h1 class="text-3xl font-black italic tracking-tighter uppercase">TS <span class="text-red-600">ADMIN</span></h1>
+                <p id="adm-logado" class="text-[10px] text-neutral-500 font-bold uppercase tracking-widest mt-1">Carregando...</p>
             </div>
+
+            <nav class="flex gap-10">
+                <button onclick="mudarAba('modelos')" id="tab-m" class="aba-btn active font-black uppercase text-xs py-2">Modelos</button>
+                <button onclick="mudarAba('chat')" id="tab-c" class="aba-btn font-black uppercase text-xs py-2">Chat Suporte</button>
+            </nav>
+
+            <button onclick="deslogar()" class="bg-white/5 hover:bg-red-600 border border-white/10 px-6 py-2 rounded-full text-[10px] font-black uppercase transition-all">Sair</button>
+        </header>
+
+        <div id="secao-modelos">
+            <div class="flex gap-2 mb-8 overflow-x-auto pb-2">
+                <button onclick="carregarModelos('todos')" class="bg-neutral-800 px-4 py-2 rounded-lg text-[10px] font-bold uppercase whitespace-nowrap">Todas</button>
+                <button onclick="carregarModelos('pendentes')" class="bg-red-900/30 text-red-500 border border-red-900/50 px-4 py-2 rounded-lg text-[10px] font-bold uppercase whitespace-nowrap">Solicitações</button>
+                <button onclick="carregarModelos('publicadas')" class="bg-green-900/30 text-green-500 border border-green-900/50 px-4 py-2 rounded-lg text-[10px] font-bold uppercase whitespace-nowrap">Publicadas</button>
+                <button onclick="carregarModelos('normais')" class="bg-blue-900/30 text-blue-400 border border-blue-900/50 px-4 py-2 rounded-lg text-[10px] font-bold uppercase whitespace-nowrap">Normais</button>
+                <button onclick="carregarModelos('vips')" class="bg-yellow-900/30 text-yellow-500 border border-yellow-900/50 px-4 py-2 rounded-lg text-[10px] font-bold uppercase whitespace-nowrap">VIPs</button>
+            </div>
+
+            <div id="grid-modelos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                </div>
         </div>
 
-        <div id="secao-modelos" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <p class="text-neutral-500">Carregando modelos...</p>
-        </div>
-
-        <div id="secao-chat" class="hidden space-y-4">
-            <p class="text-neutral-500">Carregando mensagens...</p>
+        <div id="secao-chat" class="hidden max-w-4xl mx-auto space-y-6">
+            <h2 class="text-xl font-black italic uppercase mb-8">Mensagens Recebidas</h2>
+            <div id="lista-chat" class="space-y-4"></div>
         </div>
     </div>
 
     <script>
-        // Substitua pelas suas credenciais reais se estas não forem as suas
-        const SUPABASE_URL = 'https://ezcdhydjxielfhjqgblk.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW'; // Verifique se esta chave tem permissão de escrita
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
+
+        // SEGURANÇA: Só abre se for o mateus.up16@gmail.com
+        window.onload = async () => {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) { window.location.href = 'login.html'; return; }
+            
+            const { data: isAdmin } = await _supabase.from('admins').select('*').eq('email', user.email).single();
+            if (!isAdmin) {
+                await _supabase.auth.signOut();
+                alert("Acesso restrito!");
+                window.location.href = 'login.html';
+            } else {
+                document.getElementById('adm-logado').innerText = "ADM: " + user.email;
+                carregarModelos('todos');
+            }
+        };
 
         function mudarAba(aba) {
+            const tabM = document.getElementById('tab-m');
+            const tabC = document.getElementById('tab-c');
+            const secM = document.getElementById('secao-modelos');
+            const secC = document.getElementById('secao-chat');
+
             if(aba === 'modelos') {
-                document.getElementById('secao-modelos').classList.remove('hidden');
-                document.getElementById('secao-chat').classList.add('hidden');
-                document.getElementById('tab-m').classList.add('aba-ativa');
-                document.getElementById('tab-c').classList.remove('aba-ativa');
-                carregarModelos();
+                tabM.classList.add('active'); tabC.classList.remove('active');
+                secM.classList.remove('hidden'); secC.classList.add('hidden');
+                carregarModelos('todos');
             } else {
-                document.getElementById('secao-modelos').classList.add('hidden');
-                document.getElementById('secao-chat').classList.remove('hidden');
-                document.getElementById('tab-m').classList.remove('aba-ativa');
-                document.getElementById('tab-c').classList.add('aba-ativa');
+                tabC.classList.add('active'); tabM.classList.remove('active');
+                secC.classList.remove('hidden'); secM.classList.add('hidden');
                 carregarMensagens();
             }
         }
 
-        // --- FUNÇÕES DAS MODELOS ---
-        async function carregarModelos() {
-            const { data, error } = await _supabase.from('modelos').select('*').order('created_at', { ascending: false });
-            if(error) { console.error("Erro Modelos:", error); return; }
+        async function carregarModelos(filtro) {
+            const grid = document.getElementById('grid-modelos');
+            grid.innerHTML = "<p class='text-neutral-500 col-span-full text-center animate-pulse uppercase text-[10px] font-bold py-10'>Sincronizando Banco...</p>";
+
+            let query = _supabase.from('modelos').select('*');
             
-            const cont = document.getElementById('secao-modelos');
-            cont.innerHTML = data.map(m => `
-                <div class="card p-4">
-                    <img src="${m.foto_url}" class="w-full h-40 object-cover rounded-lg mb-4">
-                    <h3 class="font-bold uppercase text-sm">${m.nome}</h3>
-                    <div class="grid grid-cols-2 gap-2 mt-4">
-                        <button onclick="updateModelo('${m.id}', {aprovado: ${!m.aprovado}})" class="text-[9px] p-2 rounded ${m.aprovado ? 'bg-green-600' : 'bg-red-600'} font-bold">APROVADO: ${m.aprovado ? 'SIM' : 'NÃO'}</button>
-                        <button onclick="updateModelo('${m.id}', {vip: ${!m.vip}})" class="text-[9px] p-2 rounded ${m.vip ? 'bg-yellow-600 text-black' : 'bg-neutral-800'} font-bold">VIP: ${m.vip ? 'SIM' : 'NÃO'}</button>
-                        <button onclick="updateModelo('${m.id}', {online: ${!m.online}})" class="text-[9px] p-2 rounded ${m.online ? 'bg-blue-600' : 'bg-neutral-800'} font-bold">ONLINE: ${m.online ? 'SIM' : 'NÃO'}</button>
-                        <button onclick="deletarModelo('${m.id}')" class="text-[9px] p-2 rounded bg-neutral-900 border border-white/10 hover:bg-red-900">EXCLUIR</button>
+            if(filtro === 'pendentes') query = query.eq('aprovado', false);
+            if(filtro === 'publicadas') query = query.eq('aprovado', true);
+            if(filtro === 'normais') query = query.eq('vip', false).eq('aprovado', true);
+            if(filtro === 'vips') query = query.eq('vip', true);
+            
+            const { data, error } = await query.order('created_at', { ascending: false });
+
+            if(error) return;
+
+            grid.innerHTML = data.map(m => `
+                <div class="card p-4 flex flex-col ${m.vip ? 'border-yellow-600/30 ring-1 ring-yellow-600/20' : ''}">
+                    <div class="relative h-52 mb-4">
+                        <img src="${m.foto_url || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover rounded-xl bg-neutral-900">
+                        ${m.online ? '<span class="absolute top-2 left-2 bg-green-500 w-3 h-3 rounded-full border-2 border-black animate-pulse"></span>' : ''}
+                        <div class="absolute bottom-2 right-2 flex gap-1">
+                             ${m.aprovado ? '<span class="bg-green-600 text-[7px] px-2 py-0.5 rounded-full font-bold">PÚBLICO</span>' : '<span class="bg-red-600 text-[7px] px-2 py-0.5 rounded-full font-bold">OCULTO</span>'}
+                        </div>
+                    </div>
+                    
+                    <h3 class="font-black uppercase text-xs mb-1 truncate">${m.nome || 'Sem Nome'}</h3>
+                    <p class="text-[9px] text-neutral-500 font-bold mb-4 italic truncate">${m.whatsapp || 'Whats não cadastrado'}</p>
+
+                    <div class="grid grid-cols-2 gap-2 mt-auto">
+                        <button onclick="updateModelo('${m.id}', {aprovado: ${!m.aprovado}}, '${filtro}')" class="text-[8px] font-black p-2 rounded-lg border ${m.aprovado ? 'bg-green-600 text-black border-transparent' : 'bg-red-600 text-white border-transparent'}">
+                            ${m.aprovado ? 'PUBLICADO' : 'APROVAR'}
+                        </button>
+                        <button onclick="updateModelo('${m.id}', {vip: ${!m.vip}}, '${filtro}')" class="text-[8px] font-black p-2 rounded-lg border ${m.vip ? 'bg-yellow-600 text-black border-transparent' : 'bg-neutral-800 text-neutral-400 border-white/5'}">
+                            VIP: ${m.vip ? 'SIM' : 'NÃO'}
+                        </button>
+                        <button onclick="updateModelo('${m.id}', {online: ${!m.online}}, '${filtro}')" class="text-[8px] font-black p-2 rounded-lg border ${m.online ? 'bg-blue-600 text-white border-transparent' : 'bg-neutral-800 text-neutral-400 border-white/5'}">
+                            ONLINE: ${m.online ? 'ON' : 'OFF'}
+                        </button>
+                        <button onclick="deletarModelo('${m.id}', '${filtro}')" class="text-[8px] font-black p-2 rounded-lg bg-black text-neutral-600 border border-white/5 hover:text-red-600 transition">
+                            EXCLUIR
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
-        async function updateModelo(id, campos) {
+        async function updateModelo(id, campos, filtroAtual) {
             await _supabase.from('modelos').update(campos).eq('id', id);
-            carregarModelos();
+            carregarModelos(filtroAtual);
         }
 
-        async function deletarModelo(id) {
-            if(confirm("Excluir modelo?")) {
+        async function deletarModelo(id, filtroAtual) {
+            if(confirm("DELETAR PERMANENTEMENTE?")) {
                 await _supabase.from('modelos').delete().eq('id', id);
-                carregarModelos();
+                carregarModelos(filtroAtual);
             }
         }
 
-        // --- FUNÇÕES DO CHAT ---
         async function carregarMensagens() {
-            const { data, error } = await _supabase.from('mensagens_suporte').select('*').order('created_at', { ascending: false });
-            if(error) { console.error("Erro Chat:", error); return; }
+            const list = document.getElementById('lista-chat');
+            const { data } = await _supabase.from('mensagens_suporte').select('*').order('created_at', { ascending: false });
 
-            const cont = document.getElementById('secao-chat');
-            cont.innerHTML = data.map(m => `
-                <div class="card p-6 flex flex-col md:flex-row gap-6">
-                    <div class="flex-1">
-                        <div class="flex gap-4 items-center mb-2">
-                            <span class="text-red-600 font-black text-xs uppercase">${m.cliente_nome}</span>
-                            <span class="text-[10px] text-neutral-600">${new Date(m.created_at).toLocaleString()}</span>
-                        </div>
-                        <p class="bg-black/50 p-3 rounded-lg border border-white/5 italic text-sm">"${m.mensagem}"</p>
-                        ${m.resposta ? `<p class="mt-2 text-xs text-green-500 font-bold">Respondido: <span class="text-neutral-400 font-normal">${m.resposta}</span></p>` : ''}
+            if(!data || !data.length) {
+                list.innerHTML = "<p class='text-neutral-600 text-center py-20 uppercase text-[10px] font-black'>Sem mensagens registradas.</p>";
+                return;
+            }
+
+            list.innerHTML = data.map(m => `
+                <div class="bg-neutral-900 border border-white/5 p-6 rounded-2xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-red-600 font-black text-[10px] uppercase">${m.cliente_nome}</span>
+                        <span class="text-[9px] text-neutral-600">${new Date(m.created_at).toLocaleDateString()}</span>
                     </div>
-                    <div class="w-full md:w-64 flex flex-col gap-2">
-                        <textarea id="input-${m.id}" class="bg-black border border-white/10 p-2 rounded text-xs h-20 outline-none focus:border-red-600" placeholder="Responder..."></textarea>
-                        <button onclick="responder('${m.id}')" class="bg-red-600 text-[10px] font-bold py-2 rounded uppercase">Enviar Resposta</button>
+                    <p class="text-sm italic text-neutral-400 mb-6">"${m.mensagem}"</p>
+                    <div class="flex flex-col gap-3 border-t border-white/5 pt-4">
+                        ${m.resposta ? `<div class="bg-green-600/5 p-3 rounded-lg border border-green-600/10 text-xs text-neutral-300 mb-2"><b>Resposta:</b> ${m.resposta}</div>` : ''}
+                        <textarea id="input-${m.id}" class="input-resp w-full p-3 rounded-xl text-xs outline-none h-20" placeholder="Responder cliente..."></textarea>
+                        <button onclick="responder('${m.id}')" class="bg-white text-black text-[10px] font-black py-3 rounded-xl uppercase hover:bg-red-600 hover:text-white transition">Enviar Mensagem</button>
                     </div>
                 </div>
             `).join('');
@@ -112,23 +176,16 @@
 
         async function responder(id) {
             const txt = document.getElementById(`input-${id}`).value;
-            if(!txt) return alert("Digite uma resposta");
-            
-            const { error } = await _supabase.from('mensagens_suporte')
-                .update({ resposta: txt, status: 'respondido' })
-                .eq('id', id);
-            
-            if(error) {
-                alert("Erro ao responder. Verifique o console.");
-                console.error(error);
-            } else {
-                alert("Resposta enviada!");
-                carregarMensagens();
-            }
+            if(!txt) return;
+            await _supabase.from('mensagens_suporte').update({ resposta: txt, status: 'respondido' }).eq('id', id);
+            alert("Resposta enviada!");
+            carregarMensagens();
         }
 
-        // Inicializar
-        carregarModelos();
+        async function deslogar() {
+            await _supabase.auth.signOut();
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>

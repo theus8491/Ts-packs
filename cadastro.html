@@ -3,102 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cadastro • TS Packs</title>
+  <title>Cadastro Perfil • TS Packs</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>body { font-family: 'Poppins', sans-serif; }</style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>body { font-family: 'Poppins', sans-serif; background: #050505; color: white; }</style>
 </head>
-<body class="bg-neutral-950 text-white flex items-center justify-center min-h-screen px-6 py-10">
-<div class="w-full max-w-md bg-gradient-to-b from-neutral-900 to-black border border-neutral-800 rounded-2xl p-8 shadow-2xl">
-  <h1 class="text-center text-2xl font-extrabold tracking-widest mb-2 italic">TS<span class="text-red-600">PACKS</span></h1>
-  <p class="text-center text-neutral-400 text-sm mb-6 uppercase tracking-tighter">Envie sua solicitação para análise</p>
-
-  <div class="bg-yellow-400/10 border border-yellow-400/30 rounded-xl p-4 mb-4 text-sm">
-    <p class="font-bold text-yellow-400 mb-1">⭐ ÁREA VIP</p>
-    <p class="text-neutral-300">Modelos VIP ficam em destaque. Valor: <strong>R$ 20,00</strong>.</p>
-  </div>
-
-  <div class="border border-green-500/40 bg-green-500/10 rounded-xl p-5 mb-6 text-center">
-    <a href="https://wa.me/5571984373174?text=Oi%2C+paguei+o+VIP." target="_blank" class="flex items-center justify-center gap-3 bg-green-600 hover:bg-green-700 py-4 rounded-xl font-extrabold tracking-widest text-lg transition shadow-lg">💰 PAGAR VIP NO WHATSAPP</a>
-  </div>
-
+<body class="flex items-center justify-center min-h-screen px-6 py-10">
+<div class="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl p-8 shadow-2xl">
+  <h2 class="text-center text-xl font-black italic mb-6 uppercase tracking-tighter text-red-600">Complete seu Perfil</h2>
+  
   <div class="space-y-4">
-    <input id="nome" placeholder="Nome artístico" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600">
-    <input id="telefone" placeholder="Seu WhatsApp (Ex: 719...)" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600">
-    <input id="idade" type="number" placeholder="Sua Idade" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600">
-    
-    <input id="instagram" placeholder="Link do Instagram (Opcional)" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500">
-
-    <textarea id="descricao" rows="3" placeholder="Descrição / Tabela de Preços" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600 resize-none"></textarea>
-
-    <label class="flex items-center gap-3 text-sm cursor-pointer bg-neutral-900/50 p-3 rounded-xl border border-neutral-800">
-      <input id="vip" type="checkbox" checked class="accent-yellow-400 w-5 h-5"> Quero ser <span class="text-yellow-400 font-bold uppercase ml-1">Modelo VIP</span>
-    </label>
-
-    <div>
-      <p class="text-xs uppercase tracking-widest text-neutral-400 mb-2 font-bold">Foto principal</p>
-      <label class="flex items-center gap-4 cursor-pointer">
-        <span class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-full font-bold text-sm transition">Escolher arquivo</span>
-        <span id="fileName1" class="text-sm text-neutral-400 truncate">Nenhum selecionado</span>
-        <input id="foto1" type="file" accept="image/*" class="hidden">
-      </label>
+    <div class="grid grid-cols-3 gap-2">
+        <input id="nome" placeholder="Nome Artístico" class="col-span-2 bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-3 outline-none focus:border-red-600">
+        <input id="idade" type="number" placeholder="Idade" class="col-span-1 bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-3 outline-none focus:border-red-600 text-center">
     </div>
 
-    <button onclick="enviar()" class="w-full mt-6 bg-red-600 hover:bg-red-700 py-4 rounded-xl font-extrabold tracking-widest transition shadow-lg shadow-red-900/20">ENVIAR SOLICITAÇÃO</button>
-    <div id="msg" class="text-center text-sm mt-4 font-bold"></div>
+    <input id="telefone" placeholder="WhatsApp (Ex: 719...)" class="w-full bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-3 outline-none focus:border-red-600">
+    <input id="instagram" placeholder="Link do Instagram (Opcional)" class="w-full bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-3 outline-none focus:border-pink-600">
+
+    <textarea id="descricao" rows="3" placeholder="Descrição / Tabela de Preços" class="w-full bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-3 outline-none focus:border-red-600 resize-none"></textarea>
+
+    <label class="flex items-center gap-3 text-sm cursor-pointer bg-neutral-900/50 p-3 rounded-xl border border-neutral-800">
+      <input id="vip_check" type="checkbox" checked class="accent-yellow-400 w-5 h-5"> Quero ser <span class="text-yellow-400 font-bold uppercase ml-1">Modelo VIP</span>
+    </label>
+
+    <div class="bg-neutral-800 p-4 rounded-xl border border-dashed border-neutral-600 text-center">
+        <p class="text-[10px] font-bold uppercase mb-2 text-neutral-400">Foto de Perfil Principal</p>
+        <input id="foto" type="file" accept="image/*" class="text-xs">
+    </div>
+
+    <div class="bg-yellow-400/5 border border-yellow-400/20 p-4 rounded-xl text-center">
+        <p class="text-[10px] font-bold text-yellow-500 uppercase mb-2 italic">Pagamento do Destaque VIP</p>
+        <a href="https://wa.me/5571984373174?text=Quero+ser+VIP+TS+PACKS" target="_blank" class="block w-full bg-green-600 py-3 rounded-xl font-black text-sm uppercase">Pagar R$ 20,00 via WhatsApp</a>
+    </div>
+
+    <button onclick="finalizarCadastro()" id="btn-final" class="w-full bg-red-600 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-red-700 transition shadow-lg shadow-red-900/20">Finalizar e Enviar</button>
+    
+    <div id="msg" class="text-center text-xs mt-4 font-bold"></div>
   </div>
 </div>
 
 <script>
 const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
-const foto1 = document.getElementById('foto1');
-const fileName1 = document.getElementById('fileName1');
-foto1.onchange = () => fileName1.textContent = foto1.files[0]?.name || 'Nenhum selecionado';
 
-async function enviar() {
-  const nome = document.getElementById('nome').value.trim();
-  const telefone = document.getElementById('telefone').value.trim();
-  const idade = document.getElementById('idade').value;
-  const instagram = document.getElementById('instagram').value.trim() || null;
-  const descricao = document.getElementById('descricao').value.trim();
-  const isVip = document.getElementById('vip').checked;
-  const f1 = foto1.files[0];
-  const msg = document.getElementById('msg');
+async function finalizarCadastro() {
+    const { data: { user } } = await _supabase.auth.getUser();
+    
+    if(!user) {
+        alert("Sessão expirada. Por favor, faça o registro novamente.");
+        location.href = "registrar.html";
+        return;
+    }
 
-  if (!nome || !telefone || !idade || !f1) {
-    msg.innerHTML = '<span class="text-red-500 text-xs">Preencha os campos obrigatórios!</span>';
-    return;
-  }
+    const nome = document.getElementById('nome').value.trim();
+    const idade = document.getElementById('idade').value;
+    const telefone = document.getElementById('telefone').value.trim();
+    const instagram = document.getElementById('instagram').value.trim() || null;
+    const descricao = document.getElementById('descricao').value.trim();
+    const isVip = document.getElementById('vip_check').checked;
+    const f = document.getElementById('foto').files[0];
+    const msg = document.getElementById('msg');
+    const btn = document.getElementById('btn-final');
 
-  msg.innerHTML = '<span class="text-neutral-400 animate-pulse">Enviando...</span>';
+    if(!nome || !telefone || !idade || !f) {
+        msg.innerHTML = "<span class='text-red-500'>Preencha os campos obrigatórios e a foto!</span>";
+        return;
+    }
 
-  try {
-    const nomeArquivo = `${Date.now()}_${f1.name}`;
-    await _supabase.storage.from('fotos-modelos').upload(nomeArquivo, f1);
-    const { data: { publicUrl } } = _supabase.storage.from('fotos-modelos').getPublicUrl(nomeArquivo);
+    btn.innerText = "ENVIANDO PERFIL...";
+    btn.disabled = true;
 
-    await _supabase.from('modelos').insert([{
-      nome: nome, 
-      whatsapp: telefone, 
-      idade: idade, 
-      descricao: descricao,
-      instagram: instagram, 
-      twitter: null, // Deixando nulo já que removemos o campo
-      foto_url: publicUrl, 
-      vip: isVip, 
-      aprovado: false, 
-      likes: 0, 
-      views: 0, 
-      clicks: 0
-    }]);
+    try {
+        // 1. Upload da Foto
+        const nomeArquivo = `${Date.now()}_${f.name}`;
+        const { error: uploadError } = await _supabase.storage.from('fotos-modelos').upload(nomeArquivo, f);
+        if (uploadError) throw new Error("Erro ao subir imagem.");
+        
+        const { data: urlData } = _supabase.storage.from('fotos-modelos').getPublicUrl(nomeArquivo);
 
-    msg.innerHTML = '<span class="text-green-400 uppercase text-xs">Sucesso! Cadastro enviado.</span>';
-    ['nome', 'telefone', 'idade', 'descricao', 'instagram'].forEach(id => document.getElementById(id).value = "");
-    fileName1.textContent = "Nenhum selecionado";
-  } catch (e) {
-    msg.innerHTML = '<span class="text-red-500 text-xs font-black">ERRO AO ENVIAR</span>';
-  }
+        // 2. Insert na tabela MODELOS
+        const { error: insertError } = await _supabase.from('modelos').insert([{
+            user_id: user.id,
+            nome: nome,
+            idade: idade,
+            whatsapp: telefone,
+            instagram: instagram,
+            descricao: descricao,
+            foto_url: urlData.publicUrl,
+            vip: isVip,
+            aprovado: false, // Começa como falso para você aprovar no ADM
+            likes: 0,
+            views: 0
+        }]);
+
+        if (insertError) throw insertError;
+
+        msg.innerHTML = "<div class='bg-green-600 p-3 rounded-lg text-white uppercase text-[10px]'>Perfil Enviado! Agora é só aguardar a aprovação.</div>";
+        
+        // Redireciona para o painel de edição após 2 segundos
+        setTimeout(() => { location.href = "painel-modelo.html"; }, 2000);
+
+    } catch(e) {
+        msg.innerHTML = `<span class="text-red-500">Erro: ${e.message}</span>`;
+        btn.innerText = "FINALIZAR E ENVIAR";
+        btn.disabled = false;
+    }
 }
 </script>
 </body>

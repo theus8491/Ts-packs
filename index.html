@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TS PACKS - Conteúdo Exclusivo</title>
+  <title>TS PACKS - Catálogo Proibido</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -14,11 +14,13 @@
     .card-modelo:hover { border-color: #facc15; transform: translateY(-5px); }
     .foto-box { width: 100%; height: 350px; object-fit: cover; object-position: center top; cursor: pointer; }
     
-    .badge-online { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); backdrop-blur: md; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 6px; z-index: 10; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .badge-online { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 6px; z-index: 10; border: 1px solid rgba(34, 197, 94, 0.3); }
     .ponto-verde { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
     .selo-vip-tag { position: absolute; top: 15px; right: 15px; background: linear-gradient(45deg, #facc15, #eab308); color: black; font-size: 10px; font-weight: 900; padding: 4px 10px; border-radius: 5px; z-index: 10; box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); }
+
+    .tag-venda-verde { background-color: #22c55e; color: black; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 4px 12px; border-radius: 6px; display: inline-block; margin-bottom: 8px; width: fit-content; }
 
     .stats-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #1a1a1a; border-bottom: 1px solid #333; }
     .stat-views { font-size: 12px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
@@ -31,46 +33,28 @@
     
     .timer-box { background: linear-gradient(90deg, #ff000022, transparent); border-left: 4px solid #ff0000; padding: 10px 20px; border-radius: 0 10px 10px 0; display: inline-block; }
 
-    /* CHAT */
-    #chat-container { position: fixed; bottom: 24px; right: 24px; z-index: 1000; }
-    #chat-button { width: 60px; height: 60px; background: #ff0000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(255,0,0,0.4); }
-    #chat-box { position: absolute; bottom: 80px; right: 0; width: 320px; height: 400px; background: #121212; border: 1px solid #333; border-radius: 20px; display: none; flex-direction: column; overflow: hidden; }
-    #chat-box.active { display: flex; }
+    .btn-grupo-fixo { position: fixed; bottom: 24px; left: 24px; z-index: 100; background: #25d366; color: white; padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 10px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); transition: 0.3s; border: 2px solid rgba(255,255,255,0.1); }
     
-    .btn-grupo-fixo { position: fixed; bottom: 24px; left: 24px; z-index: 100; background: #25d366; color: white; padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 10px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); }
+    .btn-brilho-verde { position: relative; overflow: hidden; }
+    .btn-brilho-verde::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent); transform: rotate(45deg); transition: 0.5s; animation: sweep 3s infinite; }
+    @keyframes sweep { 0% { left: -120%; } 100% { left: 120%; } }
   </style>
 </head>
 <body>
 
 <a href="https://chat.whatsapp.com/JY8D67Io1wOBoTJV9Sopmj" target="_blank" class="btn-grupo-fixo">
-    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="18" style="filter: brightness(0) invert(1);"> GRUPO OFICIAL
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="18" style="filter: brightness(0) invert(1);">
+    GRUPO OFICIAL
 </a>
-
-<div id="chat-container">
-    <div id="chat-box">
-        <div class="p-4 bg-neutral-900 border-b border-white/5 flex justify-between">
-            <span class="font-black italic text-xs uppercase">TS <span class="text-red-600">Comunidade</span></span>
-            <button onclick="toggleChat()">✕</button>
-        </div>
-        <div class="flex-1 p-4 overflow-y-auto text-[10px] space-y-2" id="chat-msgs">
-            <div class="text-neutral-500 italic">Chat aberto para membros...</div>
-        </div>
-        <div class="p-3 bg-black flex gap-2">
-            <input type="text" placeholder="Diga algo..." class="bg-neutral-900 border border-white/10 rounded px-2 py-1 text-xs w-full">
-        </div>
-    </div>
-    <div id="chat-button" onclick="toggleChat()">
-        <img src="https://cdn-icons-png.flaticon.com/512/134/134914.png" width="25" style="filter: brightness(0) invert(1);">
-    </div>
-</div>
 
 <header class="fixed w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <h1 class="text-2xl font-black italic uppercase tracking-tighter">TS<span class="text-red-600">PACKS</span></h1>
-    <nav class="flex gap-4 text-[10px] font-bold uppercase items-center">
-      <a href="registrar.html" class="border border-red-600 text-red-600 px-3 py-1 rounded hover:bg-red-600 hover:text-white transition">Cadastro</a>
-      <a href="login-modelo.html" class="bg-white/10 px-3 py-1 rounded">Login Modelo</a>
-      <a href="login.html" class="text-neutral-500">ADM</a>
+    <nav class="flex gap-3 md:gap-6 text-[9px] md:text-[11px] font-bold uppercase tracking-widest items-center">
+      <a href="modelos.html" class="hover:text-red-600 transition">Modelos</a>
+      <a href="registrar.html" class="border border-red-600 text-red-600 px-3 py-1 rounded hover:bg-red-600 hover:text-white transition uppercase font-black">Cadastro</a>
+      <a href="login-modelo.html" class="bg-white/10 px-3 py-1 rounded transition text-white hover:bg-white/20">Login Modelos</a>
+      <a href="login.html" class="bg-white/5 hover:bg-white/10 px-3 py-1 rounded transition text-neutral-400">ADM</a>
     </nav>
   </div>
 </header>
@@ -79,32 +63,53 @@
   <video autoplay muted loop playsinline class="hero-video"><source src="cris.mp4" type="video/mp4"></video>
   <div class="absolute inset-0 bg-black/70"></div>
   <div class="relative z-10 px-6">
-    <h2 class="text-5xl md:text-8xl font-black mb-4 italic uppercase tracking-tighter">TS<span class="text-red-600">PACKS</span></h2>
-    <p class="text-neutral-400 mb-8 italic font-bold uppercase tracking-[0.4em]">Vitrine Independente • Sem Vínculos</p>
-    <a href="#ranking" class="bg-red-600 text-white px-10 py-4 rounded-xl font-black uppercase text-sm shadow-lg shadow-red-600/20">Acessar Vitrine</a>
+    <h2 class="text-6xl md:text-9xl font-black mb-2 italic uppercase leading-none tracking-tighter">TS<span class="text-red-600">PACKS</span></h2>
+    <p class="text-neutral-300 mb-8 italic text-xs md:text-lg font-bold uppercase tracking-[0.6em]">CATÁLOGO PROIBIDO • ACESSO RESTRITO</p>
+    <a href="#ranking" class="bg-red-600 text-white px-12 py-4 rounded-xl font-black uppercase text-sm hover:bg-red-700 transition tracking-widest shadow-lg shadow-red-600/40">Acessar Catálogo</a>
   </div>
 </section>
 
 <section class="max-w-6xl mx-auto px-6 py-24 border-b border-white/5">
     <div class="grid md:grid-cols-2 gap-16 items-center">
         <div>
-            <span class="text-red-600 font-black uppercase text-[10px] mb-4 block">Transparência & Jurídico</span>
-            <h3 class="text-4xl font-black italic uppercase mb-8">Termos de <span class="text-red-600">Independência</span></h3>
+            <span class="text-red-600 font-black uppercase text-[10px] tracking-[0.4em] mb-4 block">Nossa Trajetória</span>
+            <h3 class="text-4xl font-black italic uppercase mb-8 tracking-tighter">No Mercado desde <span class="text-red-600">2022</span></h3>
             <div class="space-y-6">
-                <p class="text-neutral-400 text-sm font-light">A <strong>TS PACKS</strong> é uma vitrine tecnológica independente. Não somos agência e não possuímos vínculo empregatício com as modelos.</p>
-                <div class="border-l-2 border-red-600 pl-4">
-                    <h4 class="text-red-600 font-black uppercase text-sm mb-2 italic">Destaque VIP (R$ 20,00):</h4>
-                    <p class="text-neutral-400 text-sm font-light">O valor de <strong>R$ 20,00</strong> para destaque VIP é um investimento opcional. Este montante é integralmente utilizado para <strong>melhorias da plataforma</strong>, infraestrutura e tráfego pago.</p>
-                </div>
+                <p class="text-neutral-400 text-sm font-light leading-relaxed">
+                    A <strong>TS PACKS</strong> consolidou sua marca através da confiança. Iniciamos nossas operações em <strong>2022 através de grupos de WhatsApp</strong>, evoluindo para a plataforma líder que você vê hoje. 
+                </p>
+                <p class="text-neutral-400 text-sm font-light leading-relaxed border-l-2 border-red-600 pl-4">
+                    Atuamos estritamente como provedores de espaço publicitário digital. Não intermediamos transações e garantimos a total autonomia de nossos anunciantes.
+                </p>
             </div>
         </div>
-        <div class="bg-neutral-900/40 p-10 rounded-3xl border border-white/5">
-            <h4 class="text-xs font-black italic uppercase mb-6 text-red-600">Diretrizes</h4>
-            <ul class="space-y-4 text-[10px] font-bold uppercase tracking-widest">
-                <li class="flex items-start gap-4 text-white"><span>✔</span> Destaque VIP: R$ 20,00</li>
-                <li class="flex items-start gap-4 text-neutral-400"><span>✔</span> Reinvestimento em Sistema</li>
-                <li class="flex items-start gap-4 text-neutral-400"><span>✔</span> Plataforma Independente</li>
-            </ul>
+
+        <div class="flex flex-col gap-4">
+            <div class="bg-neutral-900/40 p-10 rounded-3xl border border-white/5 backdrop-blur-sm shadow-2xl shadow-red-600/5">
+                <h4 class="text-xs font-black italic uppercase mb-6 text-red-600 tracking-[0.3em]">Protocolos de Operação</h4>
+                <ul class="space-y-4 text-[11px] font-bold uppercase tracking-widest">
+                    <li class="flex items-center gap-4 text-white">
+                        <span class="w-6 h-6 flex items-center justify-center bg-red-600/20 rounded-full text-red-600 text-[8px]">✔</span> 
+                        Operação Ativa desde 2022
+                    </li>
+                    <li class="flex items-center gap-4 text-neutral-400">
+                        <span class="w-6 h-6 flex items-center justify-center bg-white/5 rounded-full text-red-600 text-[8px]">✔</span> 
+                        Origem em Grupos WhatsApp
+                    </li>
+                    <li class="flex items-center gap-4 text-neutral-400">
+                        <span class="w-6 h-6 flex items-center justify-center bg-white/5 rounded-full text-red-600 text-[8px]">✔</span> 
+                        Vitrine 100% Independente
+                    </li>
+                </ul>
+            </div>
+            
+            <a href="https://chat.whatsapp.com/JY8D67Io1wOBoTJV9Sopmj" target="_blank" class="btn-brilho-verde bg-green-600 hover:bg-green-700 text-white p-5 rounded-2xl flex items-center justify-center gap-4 transition shadow-xl shadow-green-600/20">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="24" style="filter: brightness(0) invert(1);">
+                <div class="text-left">
+                    <p class="text-[10px] font-black uppercase opacity-80 leading-none">Comunidade Oficial</p>
+                    <p class="text-lg font-black uppercase italic leading-tight">ENTRAR NO GRUPO</p>
+                </div>
+            </a>
         </div>
     </div>
 </section>
@@ -112,31 +117,45 @@
 <section id="ranking" class="max-w-7xl mx-auto px-6 py-20 text-center">
   <div class="mb-12">
       <h3 class="text-3xl font-black italic uppercase mb-4 tracking-tighter"><span class="text-red-600">RANKING</span> DA SEMANA</h3>
-      <div class="timer-box"><div id="countdown-timer" class="text-xl font-mono font-bold text-red-600 italic">...</div></div>
+      <div class="timer-box">
+          <p class="text-[9px] uppercase font-black tracking-[0.3em] text-neutral-500 mb-1">Próxima Atualização:</p>
+          <div id="countdown-timer" class="text-xl font-mono font-bold text-red-600 italic">00:00:00</div>
+      </div>
   </div>
   <div id="vitrine-ranking" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left"></div>
 </section>
 
-<section id="vip" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5">
-  <h3 class="text-2xl font-black italic uppercase mb-12 text-center text-neutral-400">MODELOS <span class="text-red-600">VIP</span></h3>
-  <div id="vitrine-vip" class="grid sm:grid-cols-2 md:grid-cols-4 gap-6"></div>
+<section id="vip" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5 text-center bg-red-600/[0.02]">
+  <div class="mb-8">
+      <h3 class="text-2xl font-black italic uppercase text-neutral-400 tracking-widest">MODELOS <span class="text-red-600">VIP</span></h3>
+      <p class="text-[10px] text-neutral-500 font-bold uppercase mt-2 tracking-widest">
+        Taxa de Destaque VIP: <span class="text-red-600">R$ 20,00</span> (Manutenção Semanal de Infraestrutura)
+      </p>
+  </div>
+  <div id="vitrine-vip" class="grid sm:grid-cols-2 md:grid-cols-4 gap-6 text-left"></div>
 </section>
 
-<footer class="bg-neutral-900/80 border-t border-white/10 pt-20 pb-10">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="grid md:grid-cols-3 gap-12 mb-16">
-            <div>
-                <h4 class="text-2xl font-black italic mb-4 uppercase">TS<span class="text-red-600">PACKS</span></h4>
-                <p class="text-neutral-500 text-[10px] font-bold uppercase italic">© 2026 TS PACKS. Todos os direitos reservados. Vitrine independente sem vínculo laboral.</p>
+<footer class="bg-neutral-900/50 border-t border-white/10 py-16 mt-20">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 items-center text-center md:text-left">
+        <div>
+            <h4 class="text-2xl font-black italic mb-4 uppercase">TS<span class="text-red-600">PACKS</span></h4>
+            <p class="text-neutral-500 text-[9px] leading-relaxed uppercase font-bold tracking-tighter italic mb-4">
+                Plataforma de anúncios independentes. Operando com excelência desde os grupos de WhatsApp em 2022.
+            </p>
+            <div class="flex gap-4 justify-center md:justify-start text-[8px] font-black uppercase tracking-widest text-neutral-600">
+                <a href="termos.html" class="hover:text-red-600 transition">Termos de Uso</a>
+                <a href="privacidade.html" class="hover:text-red-600 transition">Privacidade</a>
             </div>
-            <div class="text-center">
-                <div id="contador-global" class="text-3xl font-mono font-bold text-red-600 mb-2">000000</div>
-                <p class="text-[9px] text-neutral-600 uppercase font-black">Visitas Reais</p>
-            </div>
-            <div class="flex flex-col gap-3 text-[10px] font-black uppercase text-neutral-500 md:items-end">
-                <a href="anti-golpe.html" class="text-red-600">Guia Anti-Golpe</a>
-                <a href="https://wa.me/5571984373174" target="_blank" class="text-white hover:text-red-600 transition">SUPORTE OFICIAL</a>
-            </div>
+        </div>
+        <div class="flex flex-col items-center">
+            <div id="contador-global" class="text-3xl font-mono font-bold text-red-600 bg-red-600/5 px-6 py-2 rounded-lg border border-red-600/20 mb-2">000000</div>
+            <p class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest">Acessos Reais</p>
+        </div>
+        <div class="text-[11px] text-neutral-500 font-bold space-y-3 uppercase tracking-widest md:text-right">
+            <a href="https://wa.me/5571984373174" target="_blank" class="inline-flex items-center gap-2 bg-red-600/10 border border-red-600/30 text-white px-4 py-2 rounded-lg font-black hover:bg-red-600 transition group">
+                <span class="text-red-600 group-hover:scale-110 transition">💬</span> SUPORTE OFICIAL TS
+            </a>
+            <p class="text-[10px] text-neutral-700 font-black uppercase tracking-[0.2em] mt-4">© 2026 TS PACKS - TODOS OS DIREITOS RESERVADOS</p>
         </div>
     </div>
 </footer>
@@ -144,45 +163,76 @@
 <script>
   const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
 
-  function toggleChat() { document.getElementById('chat-box').classList.toggle('active'); }
-
   async function carregarModelos() {
     const { data } = await _supabase.from('modelos').select('*').eq('aprovado', true).order('likes', { ascending: false });
     if (data) {
-        document.getElementById('vitrine-ranking').innerHTML = data.filter(m => m.likes > 0).slice(0, 3).map((m, i) => criarCard(m, true, i+1)).join('');
-        document.getElementById('vitrine-vip').innerHTML = data.filter(m => m.vip).map(m => criarCard(m, false)).join('');
+        const rankingData = data.filter(m => (m.likes || 0) > 0).slice(0, 3);
+        document.getElementById('vitrine-ranking').innerHTML = rankingData.map((m, index) => criarCard(m, true, index + 1)).join('');
+        const vipData = data.filter(m => m.vip === true);
+        document.getElementById('vitrine-vip').innerHTML = vipData.map(m => criarCard(m, false)).join('');
     }
   }
 
-  const criarCard = (m, isRank, pos) => {
-    const link = `https://wa.me/55${m.whatsapp?.replace(/\D/g, '')}`;
-    return `<div class="card-modelo">
-        <div class="badge-online"><div class="ponto-verde"></div><span class="text-[8px] font-black uppercase">Online</span></div>
-        <img src="${m.foto_url}" class="foto-box" onclick="registrarView('${m.id}', ${m.views}, '${link}')">
-        <div class="stats-bar"><span class="stat-views">👁️ ${m.views || 0}</span> <button class="like-btn">❤️ ${m.likes || 0}</button></div>
+  const criarCard = (m, isRank, posicao) => {
+      let jaCurtiu = JSON.parse(localStorage.getItem('ts_likes') || "[]").includes(m.id);
+      const linkWhats = `https://wa.me/55${m.whatsapp?.replace(/\D/g, '')}`;
+      return `
+      <div class="card-modelo ${isRank ? 'border-red-600/40' : ''}">
+        ${isRank ? `<div class="absolute top-4 right-4 bg-red-600 text-white font-black px-3 py-1 rounded-full text-[10px] z-20 italic">#${posicao}º</div>` : ''}
+        ${m.vip ? `<div class="selo-vip-tag">⭐ VIP</div>` : ''}
+        <div class="badge-online"><div class="ponto-verde"></div><span class="text-[8px] font-black uppercase text-white">Online</span></div>
+        <div onclick="registrarView('${m.id}', ${m.views || 0}, '${linkWhats}')" class="cursor-pointer"><img src="${m.foto_url}" class="foto-box"></div>
+        <div class="stats-bar"><div class="stat-views">👁️ ${m.views || 0}</div><button onclick="curtir('${m.id}', ${m.likes || 0})" class="like-btn ${jaCurtiu ? 'voted' : ''}"> ❤️ ${m.likes || 0} </button></div>
         <div class="p-5 flex-1 flex flex-col">
-            <h4 class="text-xl font-black italic uppercase">${m.nome}</h4>
-            <div class="tag-rosa mt-2">Verificada TS</div>
-            <p class="descricao-texto my-4">${m.descricao || ''}</p>
-            <button onclick="registrarView('${m.id}', ${m.views}, '${link}')" class="btn-whats">SOLICITAR CONTEÚDO</button>
+          <div class="tag-venda-verde">Disponível para Vendas</div>
+          <h4 class="text-2xl font-black uppercase italic ${m.vip ? 'text-yellow-500' : 'text-white'} tracking-tighter">${m.nome}</h4>
+          <div class="flex mt-3 mb-3"><span class="tag-rosa">Verificada TS</span></div>
+          <p class="descricao-texto mb-6 font-light">${m.descricao || ''}</p>
+          <button onclick="registrarView('${m.id}', ${m.views || 0}, '${linkWhats}')" class="btn-whats">SOLICITAR CONTEÚDO</button>
         </div>
-    </div>`;
+      </div>`;
   };
 
-  async function registrarView(id, v, link) { 
-      await _supabase.from('modelos').update({ views: v + 1 }).eq('id', id); 
-      window.open(link, '_blank'); 
+  async function curtir(id, likes) {
+      let curtidas = JSON.parse(localStorage.getItem('ts_likes') || "[]");
+      if (curtidas.includes(id)) return;
+      await _supabase.from('modelos').update({ likes: (Number(likes) || 0) + 1 }).eq('id', id);
+      curtidas.push(id); localStorage.setItem('ts_likes', JSON.stringify(curtidas));
+      carregarModelos();
+  }
+
+  async function registrarView(id, views, link) { 
+      await _supabase.from('modelos').update({ views: (Number(views) || 0) + 1 }).eq('id', id); 
+      window.open(link, '_blank');
       carregarModelos();
   }
 
   async function gerenciarVisitas() {
     let { data: stats } = await _supabase.from('stats').select('total_visitas').eq('id', 1).single();
-    let novo = (stats?.total_visitas || 0) + 1;
+    let novo = (Number(stats?.total_visitas) || 0) + 1;
     await _supabase.from('stats').update({ total_visitas: novo }).eq('id', 1);
     document.getElementById('contador-global').innerText = novo.toString().padStart(6, '0');
   }
 
-  carregarModelos(); gerenciarVisitas();
+  async function gerenciarReset() {
+      const { data: config } = await _supabase.from('stats').select('ultimo_reset').eq('id', 1).single();
+      if (!config) return;
+      const agora = new Date().getTime();
+      const dataReset = new Date(config.ultimo_reset).getTime() + (3 * 24 * 60 * 60 * 1000);
+      const restante = dataReset - agora;
+      if (restante <= 0) {
+          await _supabase.from('modelos').update({ likes: 0, views: 0 }).eq('aprovado', true);
+          await _supabase.from('stats').update({ ultimo_reset: new Date().toISOString() }).eq('id', 1);
+          location.reload();
+      } else {
+          const h = Math.floor(restante / (1000 * 60 * 60));
+          const m = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((restante % (1000 * 60)) / 1000);
+          document.getElementById('countdown-timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      }
+  }
+
+  carregarModelos(); gerenciarVisitas(); setInterval(gerenciarReset, 1000);
 </script>
 </body>
 </html>

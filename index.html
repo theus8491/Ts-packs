@@ -11,7 +11,7 @@
     body { font-family: 'Poppins', sans-serif; background-color: #0a0a0a; color: white; overflow-x: hidden; }
     .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
     .card-modelo { background: #121212; border: 1px solid #333; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; height: 100%; position: relative; }
-    .card-modelo:hover { border-color: #facc15; transform: translateY(-5px); }
+    .card-modelo:hover { border-color: #ff0000; transform: translateY(-5px); }
     .foto-box { width: 100%; height: 350px; object-fit: cover; object-position: center top; cursor: pointer; }
     
     .badge-online { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 6px; z-index: 10; border: 1px solid rgba(34, 197, 94, 0.3); }
@@ -24,17 +24,21 @@
 
     .stats-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #1a1a1a; border-bottom: 1px solid #333; }
     .stat-views { font-size: 12px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
-    .like-btn { cursor: pointer; transition: 0.2s; background: #ff0000; color: white; padding: 5px 12px; border-radius: 8px; font-weight: 800; font-size: 12px; display: flex; align-items: center; gap: 6px; box-shadow: 0 0 15px rgba(255,0,0,0.5); border: none; }
-    .like-btn.voted { background: #444; box-shadow: none; cursor: default; opacity: 0.7; }
     
+    .like-btn { cursor: pointer; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); background: rgba(255, 255, 255, 0.05); color: #fff; padding: 6px 16px; border-radius: 100px; font-weight: 900; font-size: 13px; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(212, 175, 55, 0.4); backdrop-filter: blur(5px); }
+    .like-btn:hover { transform: scale(1.05); border-color: #d4af37; background: rgba(212, 175, 55, 0.1); }
+    .like-btn.voted { background: linear-gradient(135deg, #d4af37 0%, #f9f295 50%, #b8860b 100%); color: #000; border-color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.6); cursor: default; }
+    
+    .news-wrapper { max-width: 1200px; margin: -30px auto 40px; position: relative; z-index: 30; padding: 0 20px; }
+    .news-card { background: #1a1a1a; border-left: 4px solid #ff0000; border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .news-badge { background: #ff0000; color: #fff; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; }
+
     .tag-rosa { border: 1px solid #ff007f; color: #ff007f; font-size: 10px; padding: 2px 10px; border-radius: 20px; background: rgba(255, 0, 127, 0.1); text-transform: uppercase; font-weight: bold; width: fit-content; }
     .descricao-texto { font-size: 13px; color: #a3a3a3; line-height: 1.5; margin-top: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .btn-whats { background-color: #25d366; color: white; text-align: center; padding: 12px; font-weight: 800; border-radius: 10px; margin-top: auto; text-transform: uppercase; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
     
     .timer-box { background: linear-gradient(90deg, #ff000022, transparent); border-left: 4px solid #ff0000; padding: 10px 20px; border-radius: 0 10px 10px 0; display: inline-block; }
-
     .btn-grupo-fixo { position: fixed; bottom: 24px; left: 24px; z-index: 100; background: #25d366; color: white; padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 10px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); transition: 0.3s; border: 2px solid rgba(255,255,255,0.1); }
-    
     .btn-brilho-verde { position: relative; overflow: hidden; }
     .btn-brilho-verde::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent); transform: rotate(45deg); transition: 0.5s; animation: sweep 3s infinite; }
     @keyframes sweep { 0% { left: -120%; } 100% { left: 120%; } }
@@ -69,47 +73,43 @@
   </div>
 </section>
 
+<div class="news-wrapper" id="container-noticias" style="display: none;">
+    <div class="news-card">
+        <span class="news-badge">Aviso</span>
+        <div id="texto-noticia" class="text-sm font-bold tracking-tight text-neutral-200"></div>
+    </div>
+</div>
+
 <section class="max-w-6xl mx-auto px-6 py-24 border-b border-white/5">
     <div class="grid md:grid-cols-2 gap-16 items-center">
         <div>
             <span class="text-red-600 font-black uppercase text-[10px] tracking-[0.4em] mb-4 block">Nossa Trajetória</span>
             <h3 class="text-4xl font-black italic uppercase mb-8 tracking-tighter">No Mercado desde <span class="text-red-600">2022</span></h3>
             <div class="space-y-6">
-                <p class="text-neutral-400 text-sm font-light leading-relaxed">
-                    A <strong>TS PACKS</strong> consolidou sua marca através da confiança. Iniciamos nossas operações em <strong>2022 através de grupos de WhatsApp</strong>, evoluindo para a plataforma líder que você vê hoje. 
-                </p>
-                <p class="text-neutral-400 text-sm font-light leading-relaxed border-l-2 border-red-600 pl-4">
-                    Atuamos estritamente como provedores de espaço publicitário digital. Não intermediamos transações e garantimos a total autonomia de nossos anunciantes.
-                </p>
+                <p class="text-neutral-400 text-sm font-light leading-relaxed">A <strong>TS PACKS</strong> consolidou sua marca através da confiança. Evoluímos de grupos de WhatsApp para a plataforma líder hoje.</p>
+                <div class="border-l-2 border-red-600 pl-4">
+                    <p class="text-neutral-200 text-xs font-bold uppercase tracking-wider">Taxa VIP Única: R$ 20,00</p>
+                </div>
             </div>
         </div>
+        <a href="https://chat.whatsapp.com/JY8D67Io1wOBoTJV9Sopmj" target="_blank" class="btn-brilho-verde bg-green-600 hover:bg-green-700 text-white p-5 rounded-2xl flex items-center justify-center gap-4 transition shadow-xl">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="24" style="filter: brightness(0) invert(1);">
+            <div class="text-left"><p class="text-[10px] font-black uppercase opacity-80 leading-none">Comunidade Oficial</p><p class="text-lg font-black uppercase italic leading-tight">ENTRAR NO GRUPO</p></div>
+        </a>
+    </div>
 
-        <div class="flex flex-col gap-4">
-            <div class="bg-neutral-900/40 p-10 rounded-3xl border border-white/5 backdrop-blur-sm shadow-2xl shadow-red-600/5">
-                <h4 class="text-xs font-black italic uppercase mb-6 text-red-600 tracking-[0.3em]">Protocolos de Operação</h4>
-                <ul class="space-y-4 text-[11px] font-bold uppercase tracking-widest">
-                    <li class="flex items-center gap-4 text-white">
-                        <span class="w-6 h-6 flex items-center justify-center bg-red-600/20 rounded-full text-red-600 text-[8px]">✔</span> 
-                        Operação Ativa desde 2022
-                    </li>
-                    <li class="flex items-center gap-4 text-neutral-400">
-                        <span class="w-6 h-6 flex items-center justify-center bg-white/5 rounded-full text-red-600 text-[8px]">✔</span> 
-                        Origem em Grupos WhatsApp
-                    </li>
-                    <li class="flex items-center gap-4 text-neutral-400">
-                        <span class="w-6 h-6 flex items-center justify-center bg-white/5 rounded-full text-red-600 text-[8px]">✔</span> 
-                        Vitrine 100% Independente
-                    </li>
-                </ul>
-            </div>
-            
-            <a href="https://chat.whatsapp.com/JY8D67Io1wOBoTJV9Sopmj" target="_blank" class="btn-brilho-verde bg-green-600 hover:bg-green-700 text-white p-5 rounded-2xl flex items-center justify-center gap-4 transition shadow-xl shadow-green-600/20">
-                <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="24" style="filter: brightness(0) invert(1);">
-                <div class="text-left">
-                    <p class="text-[10px] font-black uppercase opacity-80 leading-none">Comunidade Oficial</p>
-                    <p class="text-lg font-black uppercase italic leading-tight">ENTRAR NO GRUPO</p>
-                </div>
-            </a>
+    <div class="mt-20 grid md:grid-cols-2 gap-12 bg-neutral-900/30 p-8 rounded-3xl border border-white/5">
+        <div>
+            <h4 class="text-red-600 font-black uppercase text-xs mb-4 tracking-widest">Aviso de Investimento</h4>
+            <p class="text-neutral-400 text-xs leading-relaxed font-medium italic">
+                Para manter a integridade e exclusividade da plataforma, aplicamos uma taxa de investimento único de <strong>R$ 20,00</strong> para novos perfis. Este valor é revertido integralmente na manutenção do servidor, tráfego pago para atrair novos clientes e segurança dos dados das modelos. Não trabalhamos com mensalidades, apenas um aporte inicial para validação de conta.
+            </p>
+        </div>
+        <div>
+            <h4 class="text-neutral-400 font-black uppercase text-xs mb-4 tracking-widest underline">Termos e Condições</h4>
+            <p class="text-neutral-500 text-[10px] leading-relaxed uppercase">
+                Ao utilizar a <strong>TS PACKS</strong>, você declara ser maior de 18 anos. Atuamos estritamente como uma plataforma de publicidade e anúncios independentes. Não possuímos vínculo empregatício ou responsabilidade sobre as negociações privadas entre anunciante e cliente. O conteúdo exposto é de inteira responsabilidade da modelo.
+            </p>
         </div>
     </div>
 </section>
@@ -126,12 +126,7 @@
 </section>
 
 <section id="vip" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5 text-center bg-red-600/[0.02]">
-  <div class="mb-8">
-      <h3 class="text-2xl font-black italic uppercase text-neutral-400 tracking-widest">MODELOS <span class="text-red-600">VIP</span></h3>
-      <p class="text-[10px] text-neutral-500 font-bold uppercase mt-2 tracking-widest">
-        Taxa de Destaque VIP: <span class="text-red-600">R$ 20,00</span> (Manutenção Semanal de Infraestrutura)
-      </p>
-  </div>
+  <h3 class="text-2xl font-black italic uppercase text-neutral-400 tracking-widest mb-12">MODELOS <span class="text-red-600">VIP</span></h3>
   <div id="vitrine-vip" class="grid sm:grid-cols-2 md:grid-cols-4 gap-6 text-left"></div>
 </section>
 
@@ -139,22 +134,14 @@
     <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 items-center text-center md:text-left">
         <div>
             <h4 class="text-2xl font-black italic mb-4 uppercase">TS<span class="text-red-600">PACKS</span></h4>
-            <p class="text-neutral-500 text-[9px] leading-relaxed uppercase font-bold tracking-tighter italic mb-4">
-                Plataforma de anúncios independentes. Operando com excelência desde os grupos de WhatsApp em 2022.
-            </p>
-            <div class="flex gap-4 justify-center md:justify-start text-[8px] font-black uppercase tracking-widest text-neutral-600">
-                <a href="termos.html" class="hover:text-red-600 transition">Termos de Uso</a>
-                <a href="privacidade.html" class="hover:text-red-600 transition">Privacidade</a>
-            </div>
+            <p class="text-neutral-500 text-[9px] leading-relaxed uppercase font-bold tracking-tighter italic">Plataforma de anúncios independentes. Operando desde os grupos de WhatsApp em 2022.</p>
         </div>
         <div class="flex flex-col items-center">
             <div id="contador-global" class="text-3xl font-mono font-bold text-red-600 bg-red-600/5 px-6 py-2 rounded-lg border border-red-600/20 mb-2">000000</div>
             <p class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest">Acessos Reais</p>
         </div>
         <div class="text-[11px] text-neutral-500 font-bold space-y-3 uppercase tracking-widest md:text-right">
-            <a href="https://wa.me/5571984373174" target="_blank" class="inline-flex items-center gap-2 bg-red-600/10 border border-red-600/30 text-white px-4 py-2 rounded-lg font-black hover:bg-red-600 transition group">
-                <span class="text-red-600 group-hover:scale-110 transition">💬</span> SUPORTE OFICIAL TS
-            </a>
+            <a href="https://wa.me/5571984373174" target="_blank" class="inline-flex items-center gap-2 bg-red-600/10 border border-red-600/30 text-white px-4 py-2 rounded-lg font-black hover:bg-red-600 transition"><span class="text-red-600">💬</span> SUPORTE OFICIAL TS</a>
             <p class="text-[10px] text-neutral-700 font-black uppercase tracking-[0.2em] mt-4">© 2026 TS PACKS - TODOS OS DIREITOS RESERVADOS</p>
         </div>
     </div>
@@ -162,6 +149,15 @@
 
 <script>
   const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
+
+  async function carregarNoticias() {
+      const { data } = await _supabase.from('noticias').select('*').order('id', { ascending: false }).limit(1);
+      if (data && data.length > 0) {
+          const n = data[0];
+          document.getElementById('container-noticias').style.display = 'block';
+          document.getElementById('texto-noticia').innerHTML = `<span class="${n.destaque ? 'text-red-600' : 'text-red-400'} uppercase">${n.titulo}:</span> ${n.conteudo}`;
+      }
+  }
 
   async function carregarModelos() {
     const { data } = await _supabase.from('modelos').select('*').eq('aprovado', true).order('likes', { ascending: false });
@@ -175,14 +171,23 @@
 
   const criarCard = (m, isRank, posicao) => {
       let jaCurtiu = JSON.parse(localStorage.getItem('ts_likes') || "[]").includes(m.id);
-      const linkWhats = `https://wa.me/55${m.whatsapp?.replace(/\D/g, '')}`;
+      const numeroLimpo = m.whatsapp?.replace(/\D/g, '');
+      const msg = encodeURIComponent(`Olá ${m.nome}, vim pela TS PACKS e gostaria de solicitar a sua tabela de conteúdo!`);
+      const linkWhats = `https://wa.me/55${numeroLimpo}?text=${msg}`;
+
       return `
       <div class="card-modelo ${isRank ? 'border-red-600/40' : ''}">
         ${isRank ? `<div class="absolute top-4 right-4 bg-red-600 text-white font-black px-3 py-1 rounded-full text-[10px] z-20 italic">#${posicao}º</div>` : ''}
         ${m.vip ? `<div class="selo-vip-tag">⭐ VIP</div>` : ''}
         <div class="badge-online"><div class="ponto-verde"></div><span class="text-[8px] font-black uppercase text-white">Online</span></div>
         <div onclick="registrarView('${m.id}', ${m.views || 0}, '${linkWhats}')" class="cursor-pointer"><img src="${m.foto_url}" class="foto-box"></div>
-        <div class="stats-bar"><div class="stat-views">👁️ ${m.views || 0}</div><button onclick="curtir('${m.id}', ${m.likes || 0})" class="like-btn ${jaCurtiu ? 'voted' : ''}"> ❤️ ${m.likes || 0} </button></div>
+        <div class="stats-bar">
+            <div class="stat-views">👁️ ${m.views || 0}</div>
+            <button onclick="curtir('${m.id}', ${m.likes || 0})" class="like-btn ${jaCurtiu ? 'voted' : ''}"> 
+                <span>${jaCurtiu ? '❤️' : '🤍'}</span> 
+                <span class="tracking-widest">${m.likes || 0}</span> 
+            </button>
+        </div>
         <div class="p-5 flex-1 flex flex-col">
           <div class="tag-venda-verde">Disponível para Vendas</div>
           <h4 class="text-2xl font-black uppercase italic ${m.vip ? 'text-yellow-500' : 'text-white'} tracking-tighter">${m.nome}</h4>
@@ -232,7 +237,7 @@
       }
   }
 
-  carregarModelos(); gerenciarVisitas(); setInterval(gerenciarReset, 1000);
+  carregarNoticias(); carregarModelos(); gerenciarVisitas(); setInterval(gerenciarReset, 1000);
 </script>
 </body>
 </html>

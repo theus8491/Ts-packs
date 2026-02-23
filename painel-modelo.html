@@ -12,9 +12,11 @@
     .glass { background: #111; border: 1px solid #222; border-radius: 24px; }
     .input-ts { background: #000; border: 1px solid #333; padding: 14px; border-radius: 12px; width: 100%; color: white; outline: none; transition: 0.3s; font-size: 14px; }
     .input-ts:focus { border-color: #dc2626; }
-    /* Estilo para a barra de rolagem da descrição */
     textarea.input-ts::-webkit-scrollbar { width: 5px; }
     textarea.input-ts::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    
+    /* Destaque para a seção de assinatura */
+    .secao-vip { border: 1px dashed #d4af37; background: rgba(212, 175, 55, 0.05); padding: 15px; border-radius: 16px; }
   </style>
 </head>
 <body class="min-h-screen p-4 pb-12">
@@ -53,6 +55,22 @@
                 <input id="zap" type="text" class="input-ts" placeholder="Ex: 71988887777">
             </div>
 
+            <div class="secao-vip space-y-3">
+                <label class="text-[10px] uppercase font-black text-[#d4af37] ml-1 block">⭐ Configuração de Assinatura</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <input id="valor_assinatura" type="number" step="0.01" class="input-ts border-yellow-500/20" placeholder="Valor R$">
+                    </div>
+                    <div>
+                        <select id="tempo_assinatura" class="input-ts border-yellow-500/20">
+                            <option value="30">30 Dias</option>
+                            <option value="90">90 Dias</option>
+                            <option value="365">Vitalício</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <div>
                 <label class="text-[10px] uppercase font-black text-neutral-500 ml-1 italic">Descrição / Tabela de Preços</label>
                 <textarea id="desc" class="input-ts h-32 resize-none" placeholder="Conte mais sobre você ou seus pacotes..."></textarea>
@@ -60,7 +78,7 @@
 
             <div>
                 <label class="text-[10px] uppercase font-black text-neutral-500 ml-1 italic">Link da Foto (Opcional)</label>
-                <input id="foto_url_texto" type="text" class="input-ts" placeholder="Ou cole o link da imagem aqui">
+                <input id="foto_url_texto" type="text" class="input-ts" placeholder="Link da imagem">
             </div>
 
             <button onclick="salvar()" id="btn-salvar" class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-lg shadow-red-900/20">Salvar Alterações</button>
@@ -93,9 +111,13 @@
         if (data) {
             document.getElementById('nome').value = data.nome || '';
             document.getElementById('zap').value = data.whatsapp || '';
-            document.getElementById('desc').value = data.descricao || ''; // Carrega a descrição
+            document.getElementById('desc').value = data.descricao || '';
             document.getElementById('img-preview').src = data.foto_url || 'https://via.placeholder.com/150';
             document.getElementById('foto_url_texto').value = data.foto_url || '';
+            
+            // CARREGA VALORES DE ASSINATURA
+            document.getElementById('valor_assinatura').value = data.valor_assinatura || '';
+            document.getElementById('tempo_assinatura').value = data.tempo_assinatura || '30';
 
             const tag = document.getElementById('status-tag');
             if (data.vip) {
@@ -137,14 +159,16 @@
                 urlFinal = publicUrl;
             }
 
-            // ATUALIZAÇÃO NO BANCO (Incluindo Descrição)
+            // ATUALIZAÇÃO NO BANCO (Incluindo Assinatura Dinâmica)
             const { error } = await _supabase
                 .from('modelos')
                 .update({
                     nome: document.getElementById('nome').value,
                     whatsapp: document.getElementById('zap').value,
-                    descricao: document.getElementById('desc').value, // Salva a descrição
-                    foto_url: urlFinal
+                    descricao: document.getElementById('desc').value,
+                    foto_url: urlFinal,
+                    valor_assinatura: document.getElementById('valor_assinatura').value,
+                    tempo_assinatura: document.getElementById('tempo_assinatura').value
                 })
                 .eq('id', userLogadoId);
 

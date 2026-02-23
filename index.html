@@ -42,6 +42,15 @@
     .btn-brilho-verde { position: relative; overflow: hidden; }
     .btn-brilho-verde::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent); transform: rotate(45deg); transition: 0.5s; animation: sweep 3s infinite; }
     @keyframes sweep { 0% { left: -120%; } 100% { left: 120%; } }
+
+    /* NOVIDADE: ESTILOS DO FILTRO */
+    .filter-section { background: #0a0a0a; padding: 40px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .filter-container { max-width: 600px; margin: 0 auto; padding: 0 20px; }
+    .search-bar { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 15px; color: white; outline: none; transition: 0.3s; text-align: center; }
+    .search-bar:focus { border-color: #ff0000; background: rgba(255,255,255,0.1); }
+    .pills-box { display: flex; gap: 10px; justify-content: center; margin-top: 15px; overflow-x: auto; padding-bottom: 10px; }
+    .pill-btn { background: #1a1a1a; border: 1px solid #333; padding: 8px 18px; border-radius: 50px; font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; white-space: nowrap; color: #666; }
+    .pill-btn.active { background: #ff0000; border-color: #ff0000; color: white; box-shadow: 0 0 15px rgba(255,0,0,0.3); }
   </style>
 </head>
 <body>
@@ -73,6 +82,17 @@
   </div>
 </section>
 
+<section class="filter-section">
+    <div class="filter-container">
+        <input type="text" id="input-busca" class="search-bar" placeholder="Buscar modelo pelo nome..." onkeyup="filtrarModelosLocal()">
+        <div class="pills-box">
+            <button onclick="setFiltro('todos', this)" class="pill-btn active">Todas</button>
+            <button onclick="setFiltro('vip', this)" class="pill-btn">Modelos VIP</button>
+            <button onclick="setFiltro('novas', this)" class="pill-btn">Recentes</button>
+        </div>
+    </div>
+</section>
+
 <div class="news-wrapper" id="container-noticias" style="display: none;">
     <div class="news-card">
         <span class="news-badge">Aviso</span>
@@ -102,13 +122,13 @@
         <div>
             <h4 class="text-red-600 font-black uppercase text-xs mb-4 tracking-widest">Aviso de Investimento</h4>
             <p class="text-neutral-400 text-xs leading-relaxed font-medium italic">
-                Para manter a integridade e exclusividade da plataforma, aplicamos uma taxa de investimento único de <strong>R$ 20,00</strong> para novos perfis. Este valor é revertido integralmente na manutenção do servidor, tráfego pago para atrair novos clientes e segurança dos dados das modelos. Não trabalhamos com mensalidades, apenas um aporte inicial para validação de conta.
+                Para manter a integridade e exclusividade da plataforma, aplicamos uma taxa de investimento único de <strong>R$ 20,00</strong> para novos perfis. Valor revertido em manutenção e tráfego pago.
             </p>
         </div>
         <div>
             <h4 class="text-neutral-400 font-black uppercase text-xs mb-4 tracking-widest underline">Termos e Condições</h4>
             <p class="text-neutral-500 text-[10px] leading-relaxed uppercase">
-                Ao utilizar a <strong>TS PACKS</strong>, você declara ser maior de 18 anos. Atuamos estritamente como uma plataforma de publicidade e anúncios independentes. Não possuímos vínculo empregatício ou responsabilidade sobre as negociações privadas entre anunciante e cliente. O conteúdo exposto é de inteira responsabilidade da modelo.
+                Ao utilizar a <strong>TS PACKS</strong>, você declara ser maior de 18 anos. Atuamos estritamente como uma plataforma de anúncios independentes.
             </p>
         </div>
     </div>
@@ -126,7 +146,7 @@
 </section>
 
 <section id="vip" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5 text-center bg-red-600/[0.02]">
-  <h3 class="text-2xl font-black italic uppercase text-neutral-400 tracking-widest mb-12">MODELOS <span class="text-red-600">VIP</span></h3>
+  <h3 class="text-2xl font-black italic uppercase text-neutral-400 tracking-widest mb-12">CATÁLOGO <span class="text-red-600">COMPLETO</span></h3>
   <div id="vitrine-vip" class="grid sm:grid-cols-2 md:grid-cols-4 gap-6 text-left"></div>
 </section>
 
@@ -142,13 +162,17 @@
         </div>
         <div class="text-[11px] text-neutral-500 font-bold space-y-3 uppercase tracking-widest md:text-right">
             <a href="https://wa.me/5571984373174" target="_blank" class="inline-flex items-center gap-2 bg-red-600/10 border border-red-600/30 text-white px-4 py-2 rounded-lg font-black hover:bg-red-600 transition"><span class="text-red-600">💬</span> SUPORTE OFICIAL TS</a>
-            <p class="text-[10px] text-neutral-700 font-black uppercase tracking-[0.2em] mt-4">© 2026 TS PACKS - TODOS OS DIREITOS RESERVADOS</p>
+            <p class="text-[10px] text-neutral-700 font-black uppercase tracking-[0.2em] mt-4">© 2026 TS PACKS</p>
         </div>
     </div>
 </footer>
 
 <script>
   const _supabase = supabase.createClient('https://ezcdhydjxielfhjqgblk.supabase.co', 'sb_publishable__ACUqgBDxQZIqCzY13LyKQ__IgrksjW');
+  
+  // NOVIDADE: VARIÁVEIS DE ESTADO
+  let todasModelos = [];
+  let filtroAtivo = 'todos';
 
   async function carregarNoticias() {
       const { data } = await _supabase.from('noticias').select('*').order('id', { ascending: false }).limit(1);
@@ -159,13 +183,38 @@
       }
   }
 
+  // NOVIDADE: FUNÇÃO DE FILTRAGEM MELHORADA
+  function setFiltro(tipo, btn) {
+      filtroAtivo = tipo;
+      document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      filtrarModelosLocal();
+  }
+
+  function filtrarModelosLocal() {
+      const termo = document.getElementById('input-busca').value.toLowerCase();
+      
+      const filtradas = todasModelos.filter(m => {
+          const matchNome = m.nome.toLowerCase().includes(termo);
+          let matchFiltro = true;
+          if (filtroAtivo === 'vip') matchFiltro = m.vip === true;
+          if (filtroAtivo === 'novas') matchFiltro = m.vip === false; // Ou use lógica de data se tiver
+          return matchNome && matchFiltro;
+      });
+
+      // Atualiza vitrine mantendo o ranking original
+      document.getElementById('vitrine-vip').innerHTML = filtradas.map(m => criarCard(m, false)).join('');
+  }
+
   async function carregarModelos() {
     const { data } = await _supabase.from('modelos').select('*').eq('aprovado', true).order('likes', { ascending: false });
     if (data) {
+        todasModelos = data; // Armazena localmente para busca rápida
         const rankingData = data.filter(m => (m.likes || 0) > 0).slice(0, 3);
         document.getElementById('vitrine-ranking').innerHTML = rankingData.map((m, index) => criarCard(m, true, index + 1)).join('');
-        const vipData = data.filter(m => m.vip === true);
-        document.getElementById('vitrine-vip').innerHTML = vipData.map(m => criarCard(m, false)).join('');
+        
+        // Carrega vitrine completa inicialmente
+        filtrarModelosLocal();
     }
   }
 

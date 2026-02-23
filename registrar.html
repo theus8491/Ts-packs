@@ -15,9 +15,12 @@
     .upload-box { border: 2px dashed rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; }
     .upload-box:hover { border-color: #dc2626; background: rgba(220, 38, 38, 0.05); }
     
-    /* Estilo do Card Obrigatório */
     .vip-obrigatorio { border: 1px solid #dc2626; background: rgba(220, 38, 38, 0.1); padding: 20px; border-radius: 16px; position: relative; overflow: hidden; }
     .vip-obrigatorio::before { content: 'OBRIGATÓRIO'; position: absolute; top: 10px; right: -30px; background: #dc2626; color: white; font-size: 8px; font-weight: 900; padding: 2px 40px; transform: rotate(45deg); }
+
+    /* Botão de Suporte/Pagamento */
+    .btn-pagamento { background: #25d366; color: white; transition: 0.3s; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2); }
+    .btn-pagamento:hover { background: #1eb956; transform: translateY(-2px); }
 
     #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
     .toast { padding: 16px 24px; border-radius: 12px; font-weight: 600; font-size: 14px; margin-bottom: 10px; animation: slideIn 0.5s ease forwards; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -93,7 +96,15 @@
                   <span class="text-xl font-black text-white">R$ 20,00</span>
               </div>
           </div>
-          <div class="mt-4 flex items-start gap-3 px-2">
+          
+          <a href="https://wa.me/5571993183374?text=Ol%C3%A1%2C%20acabei%20de%20me%20cadastrar%20na%20TS%20PACKS%20e%20gostaria%20de%20receber%20o%20PIX%20para%20ativa%C3%A7%C3%A3o%20do%20meu%20perfil%20VIP." 
+             target="_blank" 
+             class="btn-pagamento w-full mt-4 flex items-center justify-center gap-3 py-4 rounded-xl font-black text-[11px] uppercase tracking-wider">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="16" style="filter: brightness(0) invert(1);">
+            Chamar Suporte para Pagamento
+          </a>
+
+          <div class="mt-6 flex items-start gap-3 px-2">
               <input type="checkbox" id="aceito_termos" required class="mt-1">
               <label for="aceito_termos" class="text-[9px] text-neutral-500 uppercase font-bold leading-tight">
                   Estou ciente que o cadastro requer o pagamento da taxa VIP de R$ 20,00 para aprovação e ativação do perfil.
@@ -102,7 +113,7 @@
       </div>
 
       <button type="submit" id="btnReg" class="md:col-span-2 bg-red-600 hover:bg-red-700 text-white font-black py-5 rounded-2xl transition-all uppercase tracking-[0.2em] text-xs shadow-lg shadow-red-600/20 mt-4 flex justify-center items-center gap-3">
-        Finalizar e Ativar VIP
+        Salvar Dados e Concluir
       </button>
     </form>
   </div>
@@ -127,44 +138,47 @@
       e.preventDefault();
       const btn = document.getElementById('btnReg');
       const file = document.getElementById('foto_file').files[0];
+      const nomeModelo = document.getElementById('nome').value;
 
       btn.innerHTML = '<div class="loading-spinner"></div> PROCESSANDO...';
       btn.disabled = true;
 
       try {
-        // 1. Criar Auth
         const { data: auth, error: authErr } = await _supabase.auth.signUp({ 
             email: document.getElementById('email').value, 
             password: document.getElementById('password').value 
         });
         if (authErr) throw authErr;
 
-        // 2. Upload Foto
         const fileName = `${auth.user.id}-${Date.now()}.${file.name.split('.').pop()}`;
         const { error: upErr } = await _supabase.storage.from('fotos-modelos').upload(fileName, file);
         if (upErr) throw upErr;
 
         const { data: urlData } = _supabase.storage.from('fotos-modelos').getPublicUrl(fileName);
 
-        // 3. Salvar Dados (VIP SEMPRE TRUE)
         const { error: dbErr } = await _supabase.from('modelos').insert([{
             id: auth.user.id,
-            nome: document.getElementById('nome').value,
+            nome: nomeModelo,
             whatsapp: document.getElementById('whatsapp').value,
             foto_url: urlData.publicUrl,
             descricao: document.getElementById('descricao').value,
             aprovado: false,
-            vip: true // <--- OBRIGATÓRIO AQUI
+            vip: true
         }]);
 
         if (dbErr) throw dbErr;
 
-        showToast("Cadastro VIP recebido! Realize o pagamento para ativar.", "success");
-        setTimeout(() => { window.location.href = 'login-modelo.html'; }, 3000);
+        showToast("Dados salvos! Redirecionando para o pagamento...", "success");
+        
+        // Redireciona para o WhatsApp após 2 segundos para garantir o pagamento
+        setTimeout(() => { 
+            const msg = window.encodeURIComponent(`Olá, meu nome artístico é ${nomeModelo}. Acabei de me cadastrar na TS PACKS e quero o PIX para ativar meu perfil VIP!`);
+            window.location.href = `https://wa.me/5571993183374?text=${msg}`;
+        }, 2000);
 
       } catch (err) {
         showToast(err.message, "error");
-        btn.innerHTML = "Finalizar e Ativar VIP";
+        btn.innerHTML = "Salvar Dados e Concluir";
         btn.disabled = false;
       }
     });

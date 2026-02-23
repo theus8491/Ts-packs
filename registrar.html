@@ -15,9 +15,9 @@
     .upload-box { border: 2px dashed rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; }
     .upload-box:hover { border-color: #dc2626; background: rgba(220, 38, 38, 0.05); }
     
-    .vip-card { transition: 0.3s; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
-    #vip:checked + .vip-label { border-color: #dc2626; background: rgba(220, 38, 38, 0.1); }
-    #vip:checked + .vip-label .check-circle { background: #dc2626; border-color: #dc2626; }
+    /* Estilo do Card Obrigatório */
+    .vip-obrigatorio { border: 1px solid #dc2626; background: rgba(220, 38, 38, 0.1); padding: 20px; border-radius: 16px; position: relative; overflow: hidden; }
+    .vip-obrigatorio::before { content: 'OBRIGATÓRIO'; position: absolute; top: 10px; right: -30px; background: #dc2626; color: white; font-size: 8px; font-weight: 900; padding: 2px 40px; transform: rotate(45deg); }
 
     #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
     .toast { padding: 16px 24px; border-radius: 12px; font-weight: 600; font-size: 14px; margin-bottom: 10px; animation: slideIn 0.5s ease forwards; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -36,7 +36,7 @@
   <div class="glass w-full max-w-2xl p-8 md:p-12 rounded-3xl shadow-2xl">
     <div class="text-center mb-10">
         <h1 class="text-3xl font-black italic uppercase tracking-tighter">FAÇA PARTE DA <span class="text-red-600">TS</span></h1>
-        <p class="text-neutral-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-3">Preencha seus dados para análise</p>
+        <p class="text-neutral-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-3">Cadastro Exclusivo para Modelos VIP</p>
     </div>
 
     <form id="regForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -64,26 +64,6 @@
         <input type="text" id="whatsapp" required class="w-full rounded-xl p-4 text-sm outline-none" placeholder="719XXXXXXXX">
       </div>
 
-      <div class="md:col-span-2 bg-white/5 p-4 rounded-2xl border border-white/10">
-          <h3 class="text-white text-[10px] font-black uppercase tracking-widest mb-4">Configuração da sua Assinatura</h3>
-          <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="text-[9px] font-black uppercase text-neutral-400 block mb-2">Valor Cobrado (R$)</label>
-                <input type="number" id="valor_assinatura" required class="w-full rounded-xl p-4 text-sm outline-none" placeholder="Ex: 30.00">
-              </div>
-              <div>
-                <label class="text-[9px] font-black uppercase text-neutral-400 block mb-2">Tempo de Acesso</label>
-                <select id="tempo_assinatura" class="w-full rounded-xl p-4 text-sm outline-none">
-                    <option value="7">7 Dias</option>
-                    <option value="15">15 Dias</option>
-                    <option value="30" selected>30 Dias</option>
-                    <option value="90">90 Dias</option>
-                    <option value="365">Vitalício</option>
-                </select>
-              </div>
-          </div>
-      </div>
-
       <div class="md:col-span-2">
         <label class="text-[9px] font-black uppercase text-neutral-400 block mb-2">Foto de Perfil</label>
         <label for="foto_file" class="upload-box w-full h-40 rounded-xl flex flex-col items-center justify-center gap-2">
@@ -98,25 +78,31 @@
       </div>
 
       <div class="md:col-span-2">
-          <input type="checkbox" id="vip" class="hidden">
-          <label for="vip" class="vip-label vip-card w-full p-5 rounded-2xl flex items-center justify-between glass border border-white/10 transition-all">
+          <div class="vip-obrigatorio">
               <div class="flex items-center gap-4">
-                  <div class="check-circle w-6 h-6 rounded-full border-2 border-white/20 flex items-center justify-center">
-                      <div class="w-2 h-2 bg-white rounded-full opacity-0"></div>
+                  <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/40">
+                      <span class="text-white font-black">⭐</span>
                   </div>
                   <div>
-                      <h3 class="text-xs font-black uppercase text-white">Destaque VIP</h3>
-                      <p class="text-[9px] text-neutral-500 uppercase">Aparecer no topo do site</p>
+                      <h3 class="text-sm font-black uppercase text-white tracking-tighter">Assinatura VIP TS</h3>
+                      <p class="text-[9px] text-neutral-400 uppercase leading-relaxed">Taxa única de ativação para suporte, tráfego e destaque no topo do catálogo.</p>
                   </div>
               </div>
-              <div class="text-right">
-                  <span class="text-red-600 font-black text-sm uppercase">R$ 20,00</span>
+              <div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+                  <span class="text-[10px] font-black text-neutral-500 uppercase italic">Investimento Único:</span>
+                  <span class="text-xl font-black text-white">R$ 20,00</span>
               </div>
-          </label>
+          </div>
+          <div class="mt-4 flex items-start gap-3 px-2">
+              <input type="checkbox" id="aceito_termos" required class="mt-1">
+              <label for="aceito_termos" class="text-[9px] text-neutral-500 uppercase font-bold leading-tight">
+                  Estou ciente que o cadastro requer o pagamento da taxa VIP de R$ 20,00 para aprovação e ativação do perfil.
+              </label>
+          </div>
       </div>
 
       <button type="submit" id="btnReg" class="md:col-span-2 bg-red-600 hover:bg-red-700 text-white font-black py-5 rounded-2xl transition-all uppercase tracking-[0.2em] text-xs shadow-lg shadow-red-600/20 mt-4 flex justify-center items-center gap-3">
-        Finalizar meu Cadastro
+        Finalizar e Ativar VIP
       </button>
     </form>
   </div>
@@ -141,7 +127,6 @@
       e.preventDefault();
       const btn = document.getElementById('btnReg');
       const file = document.getElementById('foto_file').files[0];
-      const isVip = document.getElementById('vip').checked;
 
       btn.innerHTML = '<div class="loading-spinner"></div> PROCESSANDO...';
       btn.disabled = true;
@@ -159,30 +144,27 @@
         const { error: upErr } = await _supabase.storage.from('fotos-modelos').upload(fileName, file);
         if (upErr) throw upErr;
 
-        // 3. Link Público
         const { data: urlData } = _supabase.storage.from('fotos-modelos').getPublicUrl(fileName);
 
-        // 4. Salvar Dados (Incluindo os novos campos de assinatura)
+        // 3. Salvar Dados (VIP SEMPRE TRUE)
         const { error: dbErr } = await _supabase.from('modelos').insert([{
             id: auth.user.id,
             nome: document.getElementById('nome').value,
             whatsapp: document.getElementById('whatsapp').value,
             foto_url: urlData.publicUrl,
             descricao: document.getElementById('descricao').value,
-            valor_assinatura: parseFloat(document.getElementById('valor_assinatura').value),
-            tempo_assinatura: parseInt(document.getElementById('tempo_assinatura').value),
             aprovado: false,
-            vip: isVip
+            vip: true // <--- OBRIGATÓRIO AQUI
         }]);
 
         if (dbErr) throw dbErr;
 
-        showToast("Cadastro realizado com sucesso!", "success");
+        showToast("Cadastro VIP recebido! Realize o pagamento para ativar.", "success");
         setTimeout(() => { window.location.href = 'login-modelo.html'; }, 3000);
 
       } catch (err) {
         showToast(err.message, "error");
-        btn.innerHTML = "Finalizar meu Cadastro";
+        btn.innerHTML = "Finalizar e Ativar VIP";
         btn.disabled = false;
       }
     });
